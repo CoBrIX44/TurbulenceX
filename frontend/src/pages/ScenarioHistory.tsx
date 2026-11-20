@@ -130,7 +130,7 @@ export function ScenarioHistoryPage() {
                   <Button
                     size="icon"
                     variant="ghost"
-                    aria-label="Rename"
+                    aria-label={`Rename ${x.name}`}
                     onClick={() => {
                       setRename(x)
                       setNewName(x.name)
@@ -141,7 +141,7 @@ export function ScenarioHistoryPage() {
                   <Button
                     size="icon"
                     variant="ghost"
-                    aria-label="Duplicate"
+                    aria-label={`Duplicate ${x.name}`}
                     onClick={() =>
                       void api
                         .duplicateScenario(x.id)
@@ -154,7 +154,7 @@ export function ScenarioHistoryPage() {
                   <Button
                     size="icon"
                     variant="ghost"
-                    aria-label="Export JSON"
+                    aria-label={`Export JSON for ${x.name}`}
                     onClick={() => void exp(x.name, { disruptions: x.disruptions, actions: x.actions, settings: x.settings }, 'json')}
                   >
                     <FileJson className="h-3.5 w-3.5" />
@@ -162,7 +162,7 @@ export function ScenarioHistoryPage() {
                   <Button
                     size="icon"
                     variant="ghost"
-                    aria-label="Delete"
+                    aria-label={`Delete ${x.name}`}
                     onClick={() => {
                       if (window.confirm(`Delete “${x.name}”?`))
                         void api
@@ -184,8 +184,10 @@ export function ScenarioHistoryPage() {
             {s.presets.map((p) => (
               <button
                 key={p.id}
+                type="button"
+                aria-label={`Load template ${p.name}`}
                 onClick={() => void s.loadPreset(p)}
-                className="block w-full cursor-pointer rounded-lg border border-ink-700 bg-ink-900 p-2.5 text-left hover:border-sky-accent/50"
+                className="block w-full cursor-pointer rounded-lg border border-ink-700 bg-ink-900 p-2.5 text-left hover:border-sky-accent/50 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-sky-accent"
               >
                 <div className="text-sm font-medium">{p.name}</div>
                 <div className="text-xs text-ink-400">{p.description}</div>
@@ -204,11 +206,12 @@ export function ScenarioHistoryPage() {
           />
           <CardBody className="overflow-x-auto">
             <table className="w-full text-xs" data-testid="scenario-compare-table">
+              <caption className="sr-only">Saved Scenario Metrics Comparison</caption>
               <thead className="text-ink-400">
                 <tr>
-                  <th className="px-2 py-1.5 text-left font-medium">Metric</th>
+                  <th scope="col" className="px-2 py-1.5 text-left font-medium">Metric</th>
                   {cmp.map((c) => (
-                    <th key={c.name} className="px-2 py-1.5 text-right font-medium">
+                    <th key={c.name} scope="col" className="px-2 py-1.5 text-right font-medium">
                       {c.name}
                     </th>
                   ))}
@@ -217,7 +220,7 @@ export function ScenarioHistoryPage() {
               <tbody>
                 {CMP.map(([k, label]) => (
                   <tr key={k} className="border-t border-ink-800">
-                    <td className="px-2 py-1.5 text-ink-300">{label}</td>
+                    <td className="px-2 py-1.5 text-ink-300 font-medium">{label}</td>
                     {cmp.map((c) => (
                       <td key={c.name} className="num px-2 py-1.5 text-right">
                         {n(c.kpis[k] as number)}
@@ -226,7 +229,7 @@ export function ScenarioHistoryPage() {
                   </tr>
                 ))}
                 <tr className="border-t border-ink-800">
-                  <td className="px-2 py-1.5 text-ink-300">Network recovery %</td>
+                  <td className="px-2 py-1.5 text-ink-300 font-medium">Network recovery %</td>
                   {cmp.map((c) => (
                     <td key={c.name} className="num px-2 py-1.5 text-right text-emerald-300">
                       {c.recovery !== null ? `${c.recovery}%` : '—'}
@@ -240,7 +243,7 @@ export function ScenarioHistoryPage() {
       )}
 
       <Modal open={!!rename} onClose={() => setRename(null)} title="Rename scenario">
-        <Input value={newName} onChange={(e) => setNewName(e.target.value)} maxLength={120} autoFocus />
+        <Input aria-label="New scenario name" value={newName} onChange={(e) => setNewName(e.target.value)} maxLength={120} autoFocus />
         <div className="mt-3 flex justify-end gap-2">
           <Button variant="ghost" onClick={() => setRename(null)}>
             Cancel

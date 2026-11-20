@@ -14,8 +14,13 @@ function ScenarioSelector() {
 
   useEffect(() => {
     const h = (e: MouseEvent) => ref.current && !ref.current.contains(e.target as Node) && setOpen(false)
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false)
     document.addEventListener('mousedown', h)
-    return () => document.removeEventListener('mousedown', h)
+    window.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', h)
+      window.removeEventListener('keydown', onKey)
+    }
   }, [])
 
   return (
@@ -24,8 +29,9 @@ function ScenarioSelector() {
         type="button"
         data-testid="scenario-selector"
         onClick={() => setOpen((o) => !o)}
-        aria-haspopup="listbox"
+        aria-haspopup="menu"
         aria-expanded={open}
+        aria-label={`Select scenario, current: ${scenario.name}`}
         className="flex h-9 max-w-[280px] cursor-pointer items-center gap-2 rounded-lg border border-ink-700 bg-ink-900 px-3 text-left text-sm hover:border-ink-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-accent"
       >
         <span className="text-[10px] uppercase font-semibold tracking-wider text-ink-400">Scenario</span>
@@ -39,7 +45,7 @@ function ScenarioSelector() {
       </button>
 
       {open && (
-        <div className="absolute left-0 top-full z-[1100] mt-1.5 w-80 overflow-hidden rounded-xl border border-ink-600 bg-ink-900 shadow-2xl animate-fade-in">
+        <div role="menu" aria-label="Available scenarios" className="absolute left-0 top-full z-[1100] mt-1.5 w-80 overflow-hidden rounded-xl border border-ink-600 bg-ink-900 shadow-2xl animate-fade-in">
           <div className="px-3 pt-2.5 pb-1 text-[10px] font-semibold uppercase tracking-wider text-ink-400">
             Standard Templates
           </div>
@@ -153,7 +159,7 @@ export function TopBar({ onOpenMobile }: { onOpenMobile?: () => void }) {
             Inputs changed — run required
           </span>
         )}
-        <Button variant="ghost" size="sm" onClick={() => void s.saveScenario()} title="Save scenario">
+        <Button variant="ghost" size="sm" onClick={() => void s.saveScenario()} title="Save scenario" aria-label="Save scenario">
           <Save className="h-3.5 w-3.5" /> Save
         </Button>
         <Button

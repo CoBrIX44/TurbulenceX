@@ -14,13 +14,14 @@ if str(BASE_DIR) not in sys.path:
 log = logging.getLogger("domino_sky")
 
 try:
-    from app.main import app  # noqa: E402
+    from app.main import app as fastapi_app  # noqa: E402
+    app = fastapi_app
 except Exception as exc:
     err_text = traceback.format_exc()
     exc_msg = str(exc)
     log.error("Fatal initialization error in app.main: %s", err_text)
 
-    async def app(scope, receive, send):
+    async def fallback_app(scope, receive, send):
         if scope.get("type") == "http":
             payload = json.dumps({
                 "detail": f"FastAPI initialization failed on Vercel: {exc_msg}",
@@ -40,5 +41,7 @@ except Exception as exc:
                 "body": payload,
                 "more_body": False,
             })
+    app = fallback_app
 
-__all__ = ["app"]
+handler = app
+__all__ = ["app", "handler"]

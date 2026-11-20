@@ -13,25 +13,27 @@ export function DelayDistribution({ flights, height = 200 }: { flights: FlightRe
   const data = delayBuckets(flights)
   const colors = ['#22c55e', '#4ade80', '#f59e0b', '#fb923c', '#ef4444', '#b91c1c', '#94a3b8']
   return (
-    <ResponsiveContainer width="100%" height={height}>
-      <BarChart data={data} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
-        <CartesianGrid stroke="#16284a" vertical={false} />
-        <XAxis
-          dataKey="bucket"
-          {...axis}
-          interval={0}
-          label={{ value: 'delay (min) · CNX = cancelled', position: 'insideBottom', offset: -2, fill: '#6b82a8', fontSize: 10 }}
-          height={34}
-        />
-        <YAxis allowDecimals={false} {...axis} />
-        <Tooltip contentStyle={tooltipStyle} cursor={{ fill: 'rgba(34,211,238,0.06)' }} formatter={(v) => [`${v} flights`, 'Count']} />
-        <Bar dataKey="count" radius={[4, 4, 0, 0]} isAnimationActive>
-          {data.map((_, i) => (
-            <Cell key={i} fill={colors[i]} />
-          ))}
-        </Bar>
-      </BarChart>
-    </ResponsiveContainer>
+    <div role="img" aria-label="Flight arrival delay distribution histogram" className="w-full">
+      <ResponsiveContainer width="100%" height={height}>
+        <BarChart data={data} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
+          <CartesianGrid stroke="#16284a" vertical={false} />
+          <XAxis
+            dataKey="bucket"
+            {...axis}
+            interval={0}
+            label={{ value: 'delay (min) · CNX = cancelled', position: 'insideBottom', offset: -2, fill: '#6b82a8', fontSize: 10 }}
+            height={34}
+          />
+          <YAxis allowDecimals={false} {...axis} />
+          <Tooltip contentStyle={tooltipStyle} cursor={{ fill: 'rgba(34,211,238,0.06)' }} formatter={(v) => [`${v} flights`, 'Count']} />
+          <Bar dataKey="count" radius={[4, 4, 0, 0]} isAnimationActive>
+            {data.map((_, i) => (
+              <Cell key={i} fill={colors[i]} />
+            ))}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
   )
 }
 
@@ -42,24 +44,26 @@ export function AirportImpactChart({ result, height = 220 }: { result: Simulatio
     .sort((a, b) => b.delayed + b.cancelled - (a.delayed + a.cancelled))
   if (!data.length) return <div className="flex h-[120px] items-center justify-center text-xs text-ink-500">No airport has delayed or cancelled movements.</div>
   return (
-    <ResponsiveContainer width="100%" height={height}>
-      <BarChart data={data} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
-        <CartesianGrid stroke="#16284a" vertical={false} />
-        <XAxis dataKey="airport" {...axis} />
-        <YAxis allowDecimals={false} {...axis} />
-        <Tooltip contentStyle={tooltipStyle} cursor={{ fill: 'rgba(34,211,238,0.06)' }} />
-        <Legend wrapperStyle={{ fontSize: 11 }} />
-        <Bar dataKey="delayed" name="Delayed movements" stackId="a" fill="#f59e0b" />
-        <Bar dataKey="cancelled" name="Cancelled movements" stackId="a" fill="#94a3b8" radius={[4, 4, 0, 0]} />
-      </BarChart>
-    </ResponsiveContainer>
+    <div role="img" aria-label="Airport movement impact chart showing delayed and cancelled flights" className="w-full">
+      <ResponsiveContainer width="100%" height={height}>
+        <BarChart data={data} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
+          <CartesianGrid stroke="#16284a" vertical={false} />
+          <XAxis dataKey="airport" {...axis} />
+          <YAxis allowDecimals={false} {...axis} />
+          <Tooltip contentStyle={tooltipStyle} cursor={{ fill: 'rgba(34,211,238,0.06)' }} />
+          <Legend wrapperStyle={{ fontSize: 11 }} />
+          <Bar dataKey="delayed" name="Delayed movements" stackId="a" fill="#f59e0b" />
+          <Bar dataKey="cancelled" name="Cancelled movements" stackId="a" fill="#94a3b8" radius={[4, 4, 0, 0]} />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
   )
 }
 
 export function HealthGauge({ kpis }: { kpis: KPIs }) {
   const color = { normal: '#22c55e', minor: '#22d3ee', moderate: '#f59e0b', severe: '#ef4444' }[kpis.severity]
   return (
-    <div className="relative h-[170px]" data-testid="health-gauge">
+    <div role="img" aria-label={`Network health score ${kpis.health_score.toFixed(1)} percent, severity ${kpis.severity}`} className="relative h-[170px]" data-testid="health-gauge">
       <ResponsiveContainer width="100%" height="100%">
         <RadialBarChart innerRadius="84%" outerRadius="100%" data={[{ v: kpis.health_score }]} startAngle={210} endAngle={-30}>
           <PolarAngleAxis type="number" domain={[0, 100]} tick={false} />
@@ -162,9 +166,11 @@ export function RotationGantt({ result, t }: { result: SimulationResult; t: numb
                   l.actual_dep !== null && l.actual_arr !== null ? (
                     <button
                       key={`a-${l.flight_id}`}
+                      type="button"
+                      aria-label={`Flight ${l.flight_id} ${l.origin} to ${l.destination} actual ${fmt(l.actual_dep)} to ${fmt(l.actual_arr)}`}
                       onClick={() => !l.is_ferry && inspect(l.flight_id)}
                       title={`${l.flight_id} ${l.origin}→${l.destination} ${fmt(l.actual_dep)}–${fmt(l.actual_arr)} (+${l.arr_delay}m)`}
-                      className="absolute top-3 flex h-3.5 cursor-pointer items-center overflow-hidden rounded-sm px-1 text-[9px] font-semibold text-ink-950 hover:brightness-125"
+                      className="absolute top-3 flex h-3.5 cursor-pointer items-center overflow-hidden rounded-sm px-1 text-[9px] font-semibold text-ink-950 hover:brightness-125 focus-visible:ring-1 focus-visible:ring-sky-accent focus-visible:outline-none"
                       style={{
                         left: `${pct(l.actual_dep)}%`,
                         width: `${pct(l.actual_arr) - pct(l.actual_dep)}%`,

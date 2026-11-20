@@ -158,8 +158,10 @@ export function DispatcherPage() {
                 {d.priority_flights.map((p, i) => (
                   <button
                     key={p.flight_id}
+                    type="button"
+                    aria-label={`Inspect priority flight ${p.flight_id} on route ${p.route}`}
                     onClick={() => s.inspect(p.flight_id)}
-                    className="block w-full cursor-pointer rounded-lg border border-ink-700 bg-ink-900 p-2 text-left text-xs hover:border-ink-500"
+                    className="block w-full cursor-pointer rounded-lg border border-ink-700 bg-ink-900 p-2 text-left text-xs hover:border-ink-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-sky-accent"
                   >
                     <div className="flex items-center gap-2">
                       <span className="num text-ink-500">{i + 1}</span>

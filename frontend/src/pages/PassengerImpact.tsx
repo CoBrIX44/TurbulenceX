@@ -70,10 +70,11 @@ export function PassengerImpactPage() {
           <CardBody>
             <div className="overflow-x-auto rounded-lg border border-ink-700">
               <table className="w-full min-w-[820px] text-xs" data-testid="connections-table">
+                <caption className="sr-only">Passenger Connections and Minimum Connect Time Analysis</caption>
                 <thead className="bg-ink-850 text-ink-400">
                   <tr>
                     {['ID', 'Airport', 'Inbound', 'Arrives', 'Outbound', 'Departs', 'Pax', 'Connect / MCT', 'Status', 'Why'].map((h) => (
-                      <th key={h} className="px-2.5 py-2 text-left font-medium">
+                      <th key={h} scope="col" className="px-2.5 py-2 text-left font-medium">
                         {h}
                       </th>
                     ))}
@@ -88,13 +89,23 @@ export function PassengerImpactPage() {
                         <td className="num px-2.5 py-1.5 font-semibold">{c.connection_id}</td>
                         <td className="num px-2.5 py-1.5">{c.airport}</td>
                         <td className="px-2.5 py-1.5">
-                          <button className="num cursor-pointer text-cyan-300 hover:underline" onClick={() => s.inspect(c.from_flight)}>
+                          <button
+                            type="button"
+                            aria-label={`Inspect inbound flight ${c.from_flight}`}
+                            className="num cursor-pointer text-cyan-300 hover:underline focus-visible:ring-1 focus-visible:ring-sky-accent focus-visible:outline-none rounded"
+                            onClick={() => s.inspect(c.from_flight)}
+                          >
                             {c.from_flight}
                           </button>
                         </td>
                         <td className="num px-2.5 py-1.5 text-ink-300">{fmt(a.actual_arr)}</td>
                         <td className="px-2.5 py-1.5">
-                          <button className="num cursor-pointer text-cyan-300 hover:underline" onClick={() => s.inspect(c.to_flight)}>
+                          <button
+                            type="button"
+                            aria-label={`Inspect outbound flight ${c.to_flight}`}
+                            className="num cursor-pointer text-cyan-300 hover:underline focus-visible:ring-1 focus-visible:ring-sky-accent focus-visible:outline-none rounded"
+                            onClick={() => s.inspect(c.to_flight)}
+                          >
                             {c.to_flight}
                           </button>
                         </td>

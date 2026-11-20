@@ -26,7 +26,7 @@ export function EventLog({ events, t, height = 360, syncToPlayback = true }: { e
   return (
     <div>
       <div className="mb-2 flex items-center justify-between">
-        <span className="text-[11px] text-ink-500">
+        <span className="text-[11px] text-ink-500" aria-live="polite">
           {list.length} event(s){syncToPlayback ? ` up to ${fmt(Math.floor(t))}` : ''}
         </span>
         <Segmented<Mode>
@@ -44,12 +44,14 @@ export function EventLog({ events, t, height = 360, syncToPlayback = true }: { e
         {list.map((e, i) => (
           <button
             key={e.event_id}
+            type="button"
+            aria-label={`Event ${e.event_id}: ${e.message} at ${fmt(e.timestamp)}`}
             onClick={() => {
               setT(e.timestamp)
               if (e.flight_id && !e.flight_id.startsWith('FERRY')) inspect(e.flight_id)
             }}
             className={cn(
-              'flex w-full cursor-pointer items-start gap-2 rounded-md border border-transparent px-2 py-1.5 text-left text-xs hover:border-ink-600 hover:bg-ink-800/70',
+              'flex w-full cursor-pointer items-start gap-2 rounded-md border border-transparent px-2 py-1.5 text-left text-xs hover:border-ink-600 hover:bg-ink-800/70 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-sky-accent',
               syncToPlayback && i === list.length - 1 && 'border-ink-600 bg-ink-800/60',
             )}
           >

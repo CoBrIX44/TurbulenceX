@@ -16,19 +16,21 @@ export function CardHeader({
   icon,
   actions,
   className,
+  as: Heading = 'h2',
 }: {
   title: ReactNode
   subtitle?: ReactNode
   icon?: ReactNode
   actions?: ReactNode
   className?: string
+  as?: 'h2' | 'h3' | 'h4'
 }) {
   return (
     <div className={cn('flex items-start justify-between gap-3 border-b border-ink-700/70 px-4 py-3', className)}>
       <div className="flex min-w-0 items-start gap-2.5">
-        {icon && <div className="mt-0.5 text-sky-accent">{icon}</div>}
+        {icon && <div className="mt-0.5 text-sky-accent" aria-hidden="true">{icon}</div>}
         <div className="min-w-0">
-          <h3 className="text-sm font-semibold tracking-wide text-ink-100">{title}</h3>
+          <Heading className="text-sm font-semibold tracking-wide text-ink-100">{title}</Heading>
           {subtitle && <p className="mt-0.5 text-xs text-ink-400">{subtitle}</p>}
         </div>
       </div>

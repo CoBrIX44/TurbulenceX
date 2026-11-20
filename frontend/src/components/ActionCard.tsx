@@ -116,7 +116,13 @@ export function ActionCard({
         <div className="mt-2 flex flex-wrap items-center gap-1 text-[11px]">
           <span className="text-ink-500">Flights affected:</span>
           {flights.slice(0, 14).map((f) => (
-            <button key={f} onClick={() => inspect(f)} className="num cursor-pointer rounded bg-ink-800 px-1.5 py-0.5 text-cyan-200 hover:bg-ink-700">
+            <button
+              key={f}
+              type="button"
+              aria-label={`Inspect flight ${f}`}
+              onClick={() => inspect(f)}
+              className="num cursor-pointer rounded bg-ink-800 px-1.5 py-0.5 text-cyan-200 hover:bg-ink-700 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-sky-accent"
+            >
               {f}
             </button>
           ))}
@@ -137,7 +143,12 @@ export function ActionCard({
           ))}
         </div>
       )}
-      <button onClick={() => setOpen((o) => !o)} className="mt-2 flex cursor-pointer items-center gap-1 text-[11px] text-ink-400 hover:text-ink-200">
+      <button
+        type="button"
+        aria-expanded={open}
+        onClick={() => setOpen((o) => !o)}
+        className="mt-2 flex cursor-pointer items-center gap-1 text-[11px] text-ink-400 hover:text-ink-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-sky-accent rounded"
+      >
         <ChevronDown className={cn('h-3 w-3 transition-transform', open && 'rotate-180')} /> Aircraft & crew feasibility checks ({checks.length})
       </button>
       {open && (

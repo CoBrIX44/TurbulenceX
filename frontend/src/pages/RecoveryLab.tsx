@@ -192,7 +192,7 @@ function ActionBuilder() {
               {cancelIds.map((id) => (
                 <Badge key={id} tone="crit">
                   {id}
-                  <button aria-label={`Remove ${id}`} className="cursor-pointer" onClick={() => setCancelIds(cancelIds.filter((x) => x !== id))}>
+                  <button type="button" aria-label={`Remove ${id}`} className="cursor-pointer" onClick={() => setCancelIds(cancelIds.filter((x) => x !== id))}>
                     <X className="h-3 w-3" />
                   </button>
                 </Badge>
@@ -337,18 +337,19 @@ function Comparison() {
         </div>
         <div className="overflow-x-auto rounded-lg border border-ink-700">
           <table className="w-full text-xs" data-testid="comparison-table">
+            <caption className="sr-only">Baseline, Disrupted, and Recovered Operational Metrics Comparison</caption>
             <thead className="bg-ink-850 text-ink-400">
               <tr>
-                <th className="px-3 py-2 text-left font-medium">Metric</th>
-                <th className="px-3 py-2 text-right font-medium">Baseline</th>
-                <th className="px-3 py-2 text-right font-medium">Disrupted</th>
-                <th className="px-3 py-2 text-right font-medium">Recovered</th>
+                <th scope="col" className="px-3 py-2 text-left font-medium">Metric</th>
+                <th scope="col" className="px-3 py-2 text-right font-medium">Baseline</th>
+                <th scope="col" className="px-3 py-2 text-right font-medium">Disrupted</th>
+                <th scope="col" className="px-3 py-2 text-right font-medium">Recovered</th>
               </tr>
             </thead>
             <tbody>
               {c.rows.map((r) => (
                 <tr key={r.metric} className="border-t border-ink-800">
-                  <td className="px-3 py-1.5 text-ink-300">{r.label}</td>
+                  <td className="px-3 py-1.5 text-ink-300 font-medium">{r.label}</td>
                   <td className="num px-3 py-1.5 text-right text-ink-400">{n(r.baseline)}</td>
                   <td className="num px-3 py-1.5 text-right text-amber-200">{n(r.disrupted)}</td>
                   <td
@@ -522,7 +523,7 @@ export function RecoveryLabPage() {
             />
             <CardBody className="space-y-3">
               <div className="flex gap-2">
-                <Input placeholder={`Strategy ${s.strategies.length + 1}`} value={label} onChange={(e) => setLabel(e.target.value)} />
+                <Input aria-label="Strategy snapshot name" placeholder={`Strategy ${s.strategies.length + 1}`} value={label} onChange={(e) => setLabel(e.target.value)} />
                 <Button
                   variant="outline"
                   onClick={() => {
@@ -537,10 +538,11 @@ export function RecoveryLabPage() {
               {s.strategies.length > 0 && (
                 <div className="overflow-x-auto rounded-lg border border-ink-700">
                   <table className="w-full text-xs" data-testid="strategies-table">
+                    <caption className="sr-only">Saved Recovery Strategy Alternative Comparison</caption>
                     <thead className="bg-ink-850 text-ink-400">
                       <tr>
                         {['Strategy', 'Actions', 'Delayed', 'Cancelled', 'Delay min', 'Missed conn.', 'Crew viol.', 'Spares', 'Recovery', ''].map((h) => (
-                          <th key={h} className="px-2 py-1.5 text-left font-medium">
+                          <th key={h} scope="col" className="px-2 py-1.5 text-left font-medium">
                             {h}
                           </th>
                         ))}
@@ -564,10 +566,10 @@ export function RecoveryLabPage() {
                             <td className="num px-2 py-1.5 text-emerald-300">{st.recoveryPct !== null && st.actions.length ? `${st.recoveryPct}%` : '—'}</td>
                             <td className="px-2 py-1.5">
                               <div className="flex gap-1">
-                                <Button size="sm" variant="ghost" onClick={() => void s.loadStrategy(i)}>
+                                <Button size="sm" variant="ghost" aria-label={`Load strategy ${st.label}`} onClick={() => void s.loadStrategy(i)}>
                                   Load
                                 </Button>
-                                <Button size="icon" variant="ghost" aria-label="Delete strategy" onClick={() => s.removeStrategy(i)}>
+                                <Button size="icon" variant="ghost" aria-label={`Delete strategy ${st.label}`} onClick={() => s.removeStrategy(i)}>
                                   <Trash2 className="h-3 w-3" />
                                 </Button>
                               </div>

@@ -18,6 +18,7 @@ function Toast() {
   return (
     <div
       role="status"
+      aria-live="polite"
       className={cn(
         'fixed bottom-4 right-4 z-[1200] flex max-w-md items-start gap-2.5 rounded-lg border px-3.5 py-2.5 text-sm shadow-2xl animate-fade-in',
         toast.kind === 'error'
@@ -70,15 +71,17 @@ export function AppLayout() {
               <Spinner /> Loading flight network and running baseline simulation…
             </div>
           ) : (
-            <Suspense
-              fallback={
-                <div className="flex h-64 items-center justify-center gap-2 text-sm text-ink-400">
-                  <Spinner /> Loading module…
-                </div>
-              }
-            >
-              <Outlet />
-            </Suspense>
+            <ErrorBoundary fallbackTitle="Module Execution Error">
+              <Suspense
+                fallback={
+                  <div className="flex h-64 items-center justify-center gap-2 text-sm text-ink-400">
+                    <Spinner /> Loading module…
+                  </div>
+                }
+              >
+                <Outlet />
+              </Suspense>
+            </ErrorBoundary>
           )}
         </main>
       </div>

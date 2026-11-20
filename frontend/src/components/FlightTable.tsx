@@ -96,12 +96,13 @@ export function FlightTable({
             </option>
           ))}
         </Select>
-        <span className="ml-auto text-xs text-ink-400" data-testid="flight-count">
+        <span className="ml-auto text-xs text-ink-400" data-testid="flight-count" aria-live="polite">
           {rows.length} of {flights.length} flights
         </span>
       </div>
       <div style={{ maxHeight }} className="overflow-auto rounded-lg border border-ink-700">
         <table className="w-full min-w-[980px] text-xs" data-testid="flight-table">
+          <caption className="sr-only">Aviation Flight Schedule and Operational Status</caption>
           <thead className="text-ink-400">
             <tr>
               {th('Flight', 'flight_id')}
@@ -122,8 +123,17 @@ export function FlightTable({
             {rows.map((f) => (
               <tr
                 key={f.flight_id}
+                tabIndex={0}
+                role="button"
+                aria-label={`Inspect flight ${f.flight_id} from ${f.origin} to ${f.destination}`}
                 onClick={() => inspect(f.flight_id)}
-                className="cursor-pointer border-t border-ink-800 hover:bg-ink-800/60"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    inspect(f.flight_id)
+                  }
+                }}
+                className="cursor-pointer border-t border-ink-800 hover:bg-ink-800/60 focus-visible:bg-ink-800 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-sky-accent"
                 data-testid={`row-${f.flight_id}`}
               >
                 <td className="num px-2.5 py-1.5 font-semibold text-cyan-200">{f.flight_id}</td>

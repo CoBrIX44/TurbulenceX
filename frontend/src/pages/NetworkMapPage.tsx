@@ -147,8 +147,10 @@ export function NetworkMapPage() {
                     {apFlights.map((f) => (
                       <button
                         key={f.flight_id}
+                        type="button"
+                        aria-label={`Inspect movement flight ${f.flight_id}`}
                         onClick={() => s.inspect(f.flight_id)}
-                        className="flex w-full cursor-pointer items-center gap-2 rounded px-1.5 py-1 text-left text-xs hover:bg-ink-800"
+                        className="flex w-full cursor-pointer items-center gap-2 rounded px-1.5 py-1 text-left text-xs hover:bg-ink-800 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-sky-accent"
                       >
                         <span className="num w-14 text-cyan-200">{f.flight_id}</span>
                         <span className="num w-20 text-ink-300">{f.origin === ap.id ? `→ ${f.destination}` : `← ${f.origin}`}</span>
@@ -173,8 +175,10 @@ export function NetworkMapPage() {
                 {routeFlights.map((f) => (
                   <button
                     key={f.flight_id}
+                    type="button"
+                    aria-label={`Inspect flight ${f.flight_id} on route ${f.origin} to ${f.destination}`}
                     onClick={() => s.inspect(f.flight_id)}
-                    className="block w-full cursor-pointer rounded-lg border border-ink-700 bg-ink-900 p-2.5 text-left text-xs hover:border-ink-500"
+                    className="block w-full cursor-pointer rounded-lg border border-ink-700 bg-ink-900 p-2.5 text-left text-xs hover:border-ink-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-sky-accent"
                   >
                     <div className="flex items-center gap-2">
                       <span className="num font-semibold text-cyan-200">{f.flight_id}</span>

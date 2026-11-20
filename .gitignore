@@ -9,6 +9,8 @@ __pycache__/
 .env
 .env.local
 backend/data/scenarios/*.json
+_vendor/
+*/_vendor/
 frontend/test-results/
 frontend/playwright-report/
 *.tsbuildinfo

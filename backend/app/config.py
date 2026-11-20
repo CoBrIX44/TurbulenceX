@@ -50,6 +50,7 @@ class Settings(BaseSettings):
     @classmethod
     def _resolve_scenario_store(cls, v: Path) -> Path:
         import os
+
         if os.environ.get("VERCEL") and "SCENARIO_STORE_PATH" not in os.environ:
             return Path("/tmp/scenarios.json")
         return v if v.is_absolute() else (BACKEND_DIR / v).resolve()
@@ -57,6 +58,7 @@ class Settings(BaseSettings):
     @property
     def cors_list(self) -> list[str]:
         import os
+
         if self.cors_origins.strip() == "*" or os.environ.get("VERCEL"):
             return ["*"]
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]

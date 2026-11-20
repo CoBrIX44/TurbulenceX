@@ -1,6 +1,7 @@
 import { AlertTriangle, CheckCircle2, Info } from 'lucide-react'
 import { Suspense, useEffect, useState } from 'react'
 import { Outlet } from 'react-router-dom'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { FlightInspector } from '@/components/FlightInspector'
 import { PlaybackTicker } from '@/components/Playback'
 import { Button } from '@/components/ui/button'

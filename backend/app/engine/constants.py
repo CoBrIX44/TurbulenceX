@@ -5,6 +5,10 @@ documented assumptions (see SCOPE.md §Assumptions) — they are policy weights 
 thresholds, never substitutes for dataset facts.
 """
 
+from __future__ import annotations
+
+from typing import Literal
+
 # MODEL: industry-standard D15/A15 punctuality threshold.
 DELAY_THRESHOLD_MIN = 15
 # MODEL: a delay of an hour or more is classified as severe.
@@ -22,7 +26,7 @@ CANCELLED_PAX_PENALTY_MIN = 240
 MISSED_CONNECTION_PAX_PENALTY_MIN = 180
 
 # MODEL: health score bands (health == on-time performance %).
-HEALTH_BANDS = [(95.0, "normal"), (85.0, "minor"), (70.0, "moderate")]
+HEALTH_BANDS: list[tuple[float, Literal["normal", "minor", "moderate"]]] = [(95.0, "normal"), (85.0, "minor"), (70.0, "moderate")]
 
 # Default capacity reduction per disruption type when the user does not override.
 DEFAULT_REDUCTION_PCT = {

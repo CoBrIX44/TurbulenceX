@@ -8,6 +8,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from .api.deps import get_network
@@ -24,6 +25,20 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        response.headers["X-XSS-Protection"] = "0"
+        response.headers["Cross-Origin-Opener-Policy"] = "same-origin"
+        response.headers["Cross-Origin-Resource-Policy"] = "cross-origin"
+        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+        response.headers["Content-Security-Policy"] = (
+            "default-src 'self'; "
+            "script-src 'self' 'unsafe-inline'; "
+            "style-src 'self' 'unsafe-inline' https:; "
+            "img-src 'self' data: https: blob:; "
+            "connect-src 'self' http: https: ws: wss:; "
+            "frame-ancestors 'none'; "
+            "object-src 'none'; "
+            "base-uri 'self';"
+        )
         response.headers["Permissions-Policy"] = "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
         return response
 
@@ -57,6 +72,17 @@ def create_app() -> FastAPI:
         allow_headers=["Content-Type", "Authorization", "Accept", "Origin", "X-Requested-With"],
     )
     app.include_router(router)
+
+    @app.middleware("http")
+    async def error_handling_middleware(request: Request, call_next):
+        try:
+            return await call_next(request)
+        except Exception as exc:
+            log.exception("Unhandled error processing %s: %s", request.url.path, exc)
+            return JSONResponse(
+                status_code=500,
+                content={"detail": f"Internal Server Error: {str(exc)}"},
+            )
 
     @app.get("/")
     @app.get("/api")

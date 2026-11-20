@@ -32,7 +32,7 @@ from __future__ import annotations
 
 from collections import Counter
 from dataclasses import dataclass
-from typing import Optional
+from typing import Literal, Optional
 
 from .constants import (
     CANCELLED_PAX_PENALTY_MIN,
@@ -499,18 +499,19 @@ def _connections(net: Network, results: dict[str, FlightResult], plan: Operating
         a, b = results[c.from_flight], results[c.to_flight]
         sched_slack = net.times[c.to_flight].dep - net.times[c.from_flight].arr - c.min_connect_minutes
         prot = plan.protected.get(c.to_flight, ("",))[0] == c.connection_id
+        conn_status: Literal["made", "missed", "inbound_cancelled", "outbound_cancelled"]
         if a.status == FlightStatus.CANCELLED:
-            status, actual, reason = "inbound_cancelled", None, f"Inbound {c.from_flight} cancelled — {c.passengers} passengers cannot reach {c.airport}"
+            conn_status, actual, reason = "inbound_cancelled", None, f"Inbound {c.from_flight} cancelled — {c.passengers} passengers cannot reach {c.airport}"
         elif b.status == FlightStatus.CANCELLED:
-            status, actual, reason = "outbound_cancelled", None, f"Outbound {c.to_flight} cancelled — {c.passengers} passengers stranded at {c.airport}"
+            conn_status, actual, reason = "outbound_cancelled", None, f"Outbound {c.to_flight} cancelled — {c.passengers} passengers stranded at {c.airport}"
         else:
             assert a.actual_arr is not None and b.actual_dep is not None
             actual = b.actual_dep - a.actual_arr
             if actual >= c.min_connect_minutes:
-                status = "made"
+                conn_status = "made"
                 reason = f"{actual} min connection ≥ {c.min_connect_minutes} min minimum" + (" (protected by hold)" if prot and b.dep_delay > 0 else "")
             else:
-                status = "missed"
+                conn_status = "missed"
                 reason = (
                     f"{c.from_flight} arrived {fmt_minutes(a.actual_arr)} ({a.arr_delay} min late); {c.to_flight} departed "
                     f"{fmt_minutes(b.actual_dep)} — {actual} min available vs {c.min_connect_minutes} min required"
@@ -525,7 +526,7 @@ def _connections(net: Network, results: dict[str, FlightResult], plan: Operating
                 min_connect_minutes=c.min_connect_minutes,
                 scheduled_slack=sched_slack,
                 actual_connect_minutes=actual,
-                status=status,  # type: ignore[arg-type]
+                status=conn_status,
                 protected=prot,
                 reason=reason,
             )
@@ -634,16 +635,17 @@ def _aircraft(net: Network, plan: OperatingPlan, results: dict[str, FlightResult
         delays = [r.arr_delay for r in flown if not r.is_ferry]
         maxd = max(delays, default=0)
         loc: Optional[str]
+        ac_status: Literal["normal", "delayed", "disrupted", "idle", "deployed"]
         if is_spare:
-            status = "deployed" if legs else "idle"
+            ac_status = "deployed" if legs else "idle"
             loc = flown[-1].destination if flown else net.spares[tail].base
         else:
             if any(r.status == FlightStatus.CANCELLED for r in rs) or maxd >= SEVERE_DELAY_MIN:
-                status = "disrupted"
+                ac_status = "disrupted"
             elif maxd >= DELAY_THRESHOLD_MIN:
-                status = "delayed"
+                ac_status = "delayed"
             else:
-                status = "normal"
+                ac_status = "normal"
             loc = flown[-1].destination if flown else (legs[0].origin if legs else None)
         out.append(
             AircraftResult(
@@ -654,7 +656,7 @@ def _aircraft(net: Network, plan: OperatingPlan, results: dict[str, FlightResult
                 total_delay=sum(delays),
                 max_delay=maxd,
                 final_location=loc,
-                status=status,  # type: ignore[arg-type]
+                status=ac_status,
             )
         )
     return out
@@ -677,18 +679,19 @@ def _airports(
         congested = any(
             b.airport == ap.id and (b.scheduled_overload or b.actual_movements >= b.effective_capacity) and b.actual_movements > 0 for b in capacity
         )
+        ap_state: Literal["normal", "disrupted", "closed", "congested", "recovery"]
         if closed:
-            state = "closed"
+            ap_state = "closed"
         elif restricted:
-            state = "disrupted"
+            ap_state = "disrupted"
         elif congested:
-            state = "congested"
+            ap_state = "congested"
         elif ap.id in plan.recovery_airports:
-            state = "recovery"
+            ap_state = "recovery"
         elif any(r.origin == ap.id for r in delayed + cancelled):
-            state = "disrupted"
+            ap_state = "disrupted"
         else:
-            state = "normal"
+            ap_state = "normal"
         out.append(
             AirportResult(
                 airport=ap.id,
@@ -698,7 +701,7 @@ def _airports(
                 cancelled_flights=len({r.flight_id for r in cancelled}),
                 affected_pax=sum(r.pax for r in {r.flight_id: r for r in delayed + cancelled}.values()),
                 restricted=restricted,
-                state=state,  # type: ignore[arg-type]
+                state=ap_state,
             )
         )
     return out
@@ -734,7 +737,7 @@ def _kpis(
             est += c.passengers
     total = len(revenue)
     otp = round(100.0 * len(on_time) / total, 1) if total else 100.0
-    severity = "severe"
+    severity: Literal["normal", "minor", "moderate", "severe"] = "severe"
     for threshold, label in HEALTH_BANDS:
         if otp >= threshold:
             severity = label
@@ -766,7 +769,7 @@ def _kpis(
         spares_available=len(net.spares) - spares_used,
         otp_pct=otp,
         health_score=otp,
-        severity=severity,  # type: ignore[arg-type]
+        severity=severity,
         impact_index=pax_delay_min + pax_cancelled * CANCELLED_PAX_PENALTY_MIN + sum(c.passengers for c in missed_only) * MISSED_CONNECTION_PAX_PENALTY_MIN,
     )
 

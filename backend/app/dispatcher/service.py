@@ -182,7 +182,14 @@ def _rule_reason(c: EvaluatedAction) -> str:
     return " ".join(parts)
 
 
-def _to_rec(rank: int, c: EvaluatedAction, reason: str, reason_source: str, proposed_by: str, extra_risks: list[str]) -> Recommendation:
+def _to_rec(
+    rank: int,
+    c: EvaluatedAction,
+    reason: str,
+    reason_source: Literal["llm", "rule_based"],
+    proposed_by: Literal["llm_selected", "llm_proposed", "rule_based"],
+    extra_risks: list[str],
+) -> Recommendation:
     return Recommendation(
         rank=rank,
         candidate_id=c.candidate_id,
@@ -190,8 +197,8 @@ def _to_rec(rank: int, c: EvaluatedAction, reason: str, reason_source: str, prop
         category=c.category,
         action=c.action,
         reason=reason,
-        reason_source=reason_source,  # type: ignore[arg-type]
-        proposed_by=proposed_by,  # type: ignore[arg-type]
+        reason_source=reason_source,
+        proposed_by=proposed_by,
         flights_affected=c.flights_affected,
         impact=c.impact.model_dump() if c.impact else {},
         trade_offs=c.trade_offs,
@@ -278,7 +285,7 @@ def recommend(net: Network, scenario: ScenarioInput, provider: Optional[LLMProvi
                 reason = str(item.get("reason") or "")[:1200]
                 risks = [str(r)[:300] for r in (item.get("risks") or []) if isinstance(r, (str, int, float))][:5]
                 cand: Optional[EvaluatedAction] = None
-                proposed_by = "llm_selected"
+                proposed_by: Literal["llm_selected", "llm_proposed", "rule_based"] = "llm_selected"
                 cid = item.get("candidate_id")
                 if isinstance(cid, str) and cid in by_id:
                     cand = by_id[cid]

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import csv
 import io
+import re
 from typing import Literal, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -159,8 +160,17 @@ def create_scenario(body: ScenarioBody, store: ScenarioStore = Depends(get_store
     return store.create(body)
 
 
+SID_PATTERN = re.compile(r"^[a-zA-Z0-9_\-]{1,64}$")
+
+
+def _validate_sid(sid: str) -> None:
+    if not SID_PATTERN.match(sid):
+        raise HTTPException(400, "Invalid scenario ID format")
+
+
 @router.get("/scenarios/{sid}", response_model=StoredScenario)
 def get_scenario(sid: str, store: ScenarioStore = Depends(get_store)) -> StoredScenario:
+    _validate_sid(sid)
     s = store.get(sid)
     if s is None:
         raise HTTPException(404, "Scenario not found")
@@ -169,6 +179,7 @@ def get_scenario(sid: str, store: ScenarioStore = Depends(get_store)) -> StoredS
 
 @router.put("/scenarios/{sid}", response_model=StoredScenario)
 def update_scenario(sid: str, body: ScenarioBody, store: ScenarioStore = Depends(get_store), net: Network = Depends(get_network)) -> StoredScenario:
+    _validate_sid(sid)
     _check_airports(net, ScenarioInput(disruptions=body.disruptions))
     s = store.update(sid, body)
     if s is None:
@@ -178,6 +189,7 @@ def update_scenario(sid: str, body: ScenarioBody, store: ScenarioStore = Depends
 
 @router.delete("/scenarios/{sid}", status_code=204)
 def delete_scenario(sid: str, store: ScenarioStore = Depends(get_store)) -> Response:
+    _validate_sid(sid)
     if not store.delete(sid):
         raise HTTPException(404, "Scenario not found")
     return Response(status_code=204)
@@ -185,6 +197,7 @@ def delete_scenario(sid: str, store: ScenarioStore = Depends(get_store)) -> Resp
 
 @router.post("/scenarios/{sid}/duplicate", response_model=StoredScenario, status_code=201)
 def duplicate_scenario(sid: str, store: ScenarioStore = Depends(get_store)) -> StoredScenario:
+    _validate_sid(sid)
     s = store.duplicate(sid)
     if s is None:
         raise HTTPException(404, "Scenario not found")

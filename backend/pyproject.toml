@@ -6,7 +6,11 @@ requires-python = ">=3.11"
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
-filterwarnings = ["ignore::DeprecationWarning"]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore:.*StarletteDeprecationWarning.*",
+    "ignore:.*httpx.*",
+]
 
 [tool.ruff]
 line-length = 160

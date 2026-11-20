@@ -95,6 +95,17 @@ def test_security_headers(client):
     assert r.headers["x-frame-options"] == "DENY"
     assert r.headers["referrer-policy"] == "strict-origin-when-cross-origin"
     assert "accelerometer=()" in r.headers["permissions-policy"]
+    assert "default-src 'self'" in r.headers["content-security-policy"]
+    assert "max-age=" in r.headers["strict-transport-security"]
+    assert r.headers["cross-origin-opener-policy"] == "same-origin"
+
+
+def test_scenario_id_security_validation(client):
+    # Path traversal and injection attacks are rejected with 400
+    assert client.get("/api/scenarios/../secret").status_code in (400, 404)
+    assert client.get("/api/scenarios/bad;id").status_code == 400
+    assert client.get("/api/scenarios/id<script>").status_code == 400
+    assert client.delete("/api/scenarios/../../../etc/passwd").status_code in (400, 404)
 
 
 def test_dispatcher_rule_based_without_key(client):

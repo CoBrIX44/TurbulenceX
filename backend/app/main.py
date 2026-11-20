@@ -58,6 +58,11 @@ def create_app() -> FastAPI:
     )
     app.include_router(router)
 
+    @app.get("/")
+    @app.get("/api")
+    def api_root() -> dict:
+        return {"status": "ok", "service": "domino-sky-backend"}
+
     # Mirror routes without the /api prefix in case an upstream proxy or rewrite strips it
     for r in list(router.routes):
         r_path = getattr(r, "path", "")

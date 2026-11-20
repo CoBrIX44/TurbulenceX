@@ -84,6 +84,7 @@ export function DisruptionForm({ initial, onSubmit, onCancel }: { initial: Disru
         <Field label={`Severity — extra turnaround: ${d.extra_turnaround_min} min`} error={errors.severity}>
           <input
             type="range"
+            aria-label="Extra turnaround minutes"
             min={5}
             max={180}
             step={5}
@@ -108,6 +109,7 @@ export function DisruptionForm({ initial, onSubmit, onCancel }: { initial: Disru
         >
           <input
             type="range"
+            aria-label="Capacity reduction percentage"
             min={10}
             max={100}
             step={5}

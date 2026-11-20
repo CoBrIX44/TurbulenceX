@@ -84,6 +84,14 @@ def create_app() -> FastAPI:
                 content={"detail": f"Internal Server Error: {str(exc)}"},
             )
 
+    @app.exception_handler(Exception)
+    async def global_exception_handler(request: Request, exc: Exception):
+        log.exception("Global exception on %s: %s", request.url.path, exc)
+        return JSONResponse(
+            status_code=500,
+            content={"detail": f"Internal Server Error: {str(exc)}"},
+        )
+
     @app.get("/")
     @app.get("/api")
     def api_root() -> dict:

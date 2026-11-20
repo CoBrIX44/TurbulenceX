@@ -105,8 +105,10 @@ function RotationTimeline({ legs, current }: { legs: FlightResult[]; current: st
       {legs.map((l) => (
         <button
           key={l.flight_id}
+          type="button"
+          aria-label={`Inspect rotation leg ${l.flight_id} from ${l.origin} to ${l.destination}`}
           onClick={() => !l.is_ferry && inspect(l.flight_id)}
-          className={cn('flex w-full cursor-pointer items-center gap-2 rounded px-1 text-left hover:bg-ink-800', l.flight_id === current && 'bg-ink-800')}
+          className={cn('flex w-full cursor-pointer items-center gap-2 rounded px-1 text-left hover:bg-ink-800 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-sky-accent', l.flight_id === current && 'bg-ink-800')}
         >
           <span className="num w-20 shrink-0 text-[11px] text-ink-300">{l.flight_id.replace('FERRY-', 'FRY-')}</span>
           <span className="relative h-5 flex-1">
@@ -221,7 +223,12 @@ export function FlightInspector() {
                     />
                     <span className="num text-amber-200">+{c.minutes}m</span>
                     {c.source_flight && (
-                      <button className="cursor-pointer text-cyan-300 underline-offset-2 hover:underline" onClick={() => s.inspect(c.source_flight)}>
+                      <button
+                        type="button"
+                        aria-label={`Inspect delay source flight ${c.source_flight}`}
+                        className="cursor-pointer text-cyan-300 underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-sky-accent rounded"
+                        onClick={() => s.inspect(c.source_flight)}
+                      >
                         from {c.source_flight}
                       </button>
                     )}

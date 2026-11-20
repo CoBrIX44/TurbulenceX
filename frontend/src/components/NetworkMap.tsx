@@ -79,7 +79,13 @@ export function NetworkMap({
   const recSet = recoveryAirports ?? new Set<string>()
 
   return (
-    <div style={{ height }} className="overflow-hidden rounded-lg border border-ink-700" data-testid="network-map">
+    <div
+      role="region"
+      aria-label="Interactive Indian Flight Network Map"
+      style={{ height }}
+      className="overflow-hidden rounded-lg border border-ink-700"
+      data-testid="network-map"
+    >
       <MapContainer
         bounds={L.latLngBounds(network.airports.map((a) => [a.lat, a.lng] as [number, number])).pad(0.08)}
         minZoom={4}

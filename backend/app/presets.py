@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from .engine.models import Disruption
+from .engine.models import Disruption, DisruptionType
 
 PRESETS: list[dict] = [
     {
@@ -13,7 +13,7 @@ PRESETS: list[dict] = [
             Disruption(
                 id="D1",
                 airport="BOM",
-                type="thunderstorm",
+                type=DisruptionType.THUNDERSTORM,
                 start="08:00",
                 duration_min=90,
                 capacity_reduction_pct=100,
@@ -26,7 +26,14 @@ PRESETS: list[dict] = [
         "name": "Bengaluru Airport Closure — 60 minutes",
         "description": "BLR closed 14:00–15:00 at the afternoon peak.",
         "disruptions": [
-            Disruption(id="D1", airport="BLR", type="airport_closure", start="14:00", duration_min=60, description="BLR runway inspection closure")
+            Disruption(
+                id="D1",
+                airport="BLR",
+                type=DisruptionType.AIRPORT_CLOSURE,
+                start="14:00",
+                duration_min=60,
+                description="BLR runway inspection closure",
+            )
         ],
     },
     {
@@ -37,7 +44,7 @@ PRESETS: list[dict] = [
             Disruption(
                 id="D1",
                 airport="DEL",
-                type="capacity_reduction",
+                type=DisruptionType.CAPACITY_REDUCTION,
                 start="06:00",
                 duration_min=720,
                 capacity_reduction_pct=50,
@@ -53,7 +60,7 @@ PRESETS: list[dict] = [
             Disruption(
                 id="D1",
                 airport="HYD",
-                type="runway_blockage",
+                type=DisruptionType.RUNWAY_BLOCKAGE,
                 start="11:30",
                 duration_min=90,
                 capacity_reduction_pct=100,
@@ -66,9 +73,17 @@ PRESETS: list[dict] = [
         "name": "Multiple Airport Disruptions",
         "description": "BOM thunderstorm 08:00–09:30, BLR closure 14:00–15:00 and HYD ground-handling disruption 16:00–18:00 (+30 min turnarounds).",
         "disruptions": [
-            Disruption(id="D1", airport="BOM", type="thunderstorm", start="08:00", duration_min=90, capacity_reduction_pct=100),
-            Disruption(id="D2", airport="BLR", type="airport_closure", start="14:00", duration_min=60),
-            Disruption(id="D3", airport="HYD", type="ground_handling", start="16:00", duration_min=120, capacity_reduction_pct=0, extra_turnaround_min=30),
+            Disruption(id="D1", airport="BOM", type=DisruptionType.THUNDERSTORM, start="08:00", duration_min=90, capacity_reduction_pct=100),
+            Disruption(id="D2", airport="BLR", type=DisruptionType.AIRPORT_CLOSURE, start="14:00", duration_min=60),
+            Disruption(
+                id="D3",
+                airport="HYD",
+                type=DisruptionType.GROUND_HANDLING,
+                start="16:00",
+                duration_min=120,
+                capacity_reduction_pct=0,
+                extra_turnaround_min=30,
+            ),
         ],
     },
 ]

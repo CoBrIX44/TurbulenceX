@@ -191,6 +191,13 @@ def duplicate_scenario(sid: str, store: ScenarioStore = Depends(get_store)) -> S
     return s
 
 
+def _sanitize_csv_cell(val: object) -> object:
+    """Neutralise CSV formula injection (OWASP ASVS / CWE-1236)."""
+    if isinstance(val, str) and val and val[0] in ("=", "+", "-", "@", "\t", "\r"):
+        return f"'{val}"
+    return val
+
+
 @router.post("/export")
 def export(req: ExportRequest, net: Network = Depends(get_network)) -> Response:
     res = run_all(net, req.scenario)
@@ -229,25 +236,24 @@ def export(req: ExportRequest, net: Network = Depends(get_network)) -> Response:
         ]
     )
     for f in final.flights:
-        w.writerow(
-            [
-                f.flight_id,
-                f.tail_id,
-                f.operating_tail or "",
-                f.leg_order,
-                f.origin,
-                f.destination,
-                fmt_minutes(f.sched_dep),
-                fmt_minutes(f.actual_dep) if f.actual_dep is not None else "",
-                fmt_minutes(f.sched_arr),
-                fmt_minutes(f.actual_arr) if f.actual_arr is not None else "",
-                f.dep_delay,
-                f.arr_delay,
-                f.pax,
-                f.status.value,
-                f.primary_reason,
-                f.root_cause or "",
-                f.explanation,
-            ]
-        )
+        row = [
+            f.flight_id,
+            f.tail_id,
+            f.operating_tail or "",
+            f.leg_order,
+            f.origin,
+            f.destination,
+            fmt_minutes(f.sched_dep),
+            fmt_minutes(f.actual_dep) if f.actual_dep is not None else "",
+            fmt_minutes(f.sched_arr),
+            fmt_minutes(f.actual_arr) if f.actual_arr is not None else "",
+            f.dep_delay,
+            f.arr_delay,
+            f.pax,
+            f.status.value,
+            f.primary_reason,
+            f.root_cause or "",
+            f.explanation,
+        ]
+        w.writerow([_sanitize_csv_cell(c) for c in row])
     return Response(buf.getvalue(), media_type="text/csv", headers={"Content-Disposition": f'attachment; filename="{safe}.csv"'})

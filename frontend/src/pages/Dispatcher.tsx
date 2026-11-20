@@ -1,4 +1,4 @@
-import { AlertTriangle, Bot, Cpu, RefreshCw, Sparkles, UserX } from 'lucide-react'
+import { AlertTriangle, Bot, Cpu, RefreshCw, UserX } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { ActionCard } from '@/components/ActionCard'
 import { Page } from '@/components/layout/AppLayout'
@@ -16,12 +16,12 @@ export function DispatcherPage() {
   const hasDisruption = s.scenario.disruptions.length > 0
   return (
     <Page
-      title="AI Dispatcher"
-      subtitle="Simulation engine → calculated state → AI dispatcher → structured recommendation → deterministic validation → UI"
+      title="Automated Dispatcher &amp; Recovery"
+      subtitle="Simulation engine → calculated state → AI / rule dispatcher → structured recommendation → deterministic validation → UI"
       actions={
         <Button variant="ai" onClick={() => void s.askDispatcher()} disabled={s.dispatcherLoading || !hasDisruption} data-testid="ask-dispatcher">
-          {s.dispatcherLoading ? <Spinner /> : d ? <RefreshCw className="h-4 w-4" /> : <Sparkles className="h-4 w-4" />}
-          {d ? 'Re-analyse current state' : 'Get recovery recommendations'}
+          {s.dispatcherLoading ? <Spinner /> : d ? <RefreshCw className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
+          {d ? 'Re-analyse current state' : 'Compute recovery recommendations'}
         </Button>
       }
     >
@@ -45,10 +45,10 @@ export function DispatcherPage() {
       {s.dispatcherError && <div className="rounded-lg border border-crit/40 bg-crit/5 p-3 text-sm text-red-200">{s.dispatcherError}</div>}
       {hasDisruption && !d && !s.dispatcherLoading && (
         <Card>
-          <Empty icon={<Sparkles className="h-7 w-7 text-ai" />} title="Ask the dispatcher for recovery options">
+          <Empty icon={<Cpu className="h-7 w-7 text-ai" />} title="Request recovery candidate evaluation">
             The engine enumerates candidate actions (spare deployment, cancellations, aircraft swaps, connection protection), simulates each one, and the
             dispatcher selects and explains the best. If no LLM API key is configured, a deterministic rule-based engine produces the recommendations and the
-            source is labelled.
+            source is clearly labelled.
           </Empty>
         </Card>
       )}
@@ -64,7 +64,7 @@ export function DispatcherPage() {
           <div className="space-y-4">
             <Card className={d.source === 'llm' ? 'border-ai/40' : ''}>
               <CardHeader
-                icon={d.source === 'llm' ? <Sparkles className="h-4 w-4 text-ai" /> : <Cpu className="h-4 w-4" />}
+                icon={d.source === 'llm' ? <Bot className="h-4 w-4 text-ai" /> : <Cpu className="h-4 w-4" />}
                 title="Situation assessment"
                 subtitle={`${d.candidates_evaluated} improving candidate action(s) found by simulation`}
                 actions={

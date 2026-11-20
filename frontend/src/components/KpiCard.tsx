@@ -20,25 +20,43 @@ export function KpiCard({
 }) {
   const accent = {
     neutral: 'text-ink-100',
-    ok: 'text-green-300',
+    ok: 'text-emerald-300',
     warn: 'text-amber-300',
     crit: 'text-red-300',
     cyan: 'text-cyan-200',
     recover: 'text-emerald-200',
   }[tone]
-  const bar = { neutral: 'bg-ink-500', ok: 'bg-ok', warn: 'bg-warn', crit: 'bg-crit', cyan: 'bg-sky-accent', recover: 'bg-recover' }[tone]
+
+  const iconAccent = {
+    neutral: 'text-ink-400',
+    ok: 'text-emerald-400',
+    warn: 'text-amber-400',
+    crit: 'text-red-400',
+    cyan: 'text-cyan-400',
+    recover: 'text-emerald-400',
+  }[tone]
+
   return (
-    <div title={hint} className="relative overflow-hidden rounded-xl border border-ink-700/80 bg-ink-850/80 px-3.5 py-3 transition-colors hover:border-ink-600">
-      <span className={cn('absolute inset-y-0 left-0 w-0.5', bar)} />
+    <div
+      title={hint}
+      className="relative flex flex-col justify-between overflow-hidden rounded-xl border border-ink-700/80 bg-ink-900 px-3.5 py-3 transition-colors hover:border-ink-500/80"
+    >
       <div className="flex items-center justify-between gap-2">
-        <span className="truncate text-[11px] font-medium uppercase tracking-wider text-ink-400">{label}</span>
-        {icon && <span className="text-ink-500">{icon}</span>}
+        <span className="truncate text-[11px] font-semibold uppercase tracking-wider text-ink-400">{label}</span>
+        {icon && <span className={iconAccent}>{icon}</span>}
       </div>
-      <div className={cn('num mt-1.5 text-2xl font-semibold leading-none', accent)}>{value}</div>
-      <div className="mt-1.5 flex items-center gap-2 text-[11px] text-ink-400">
-        {sub}
+      <div className={cn('num mt-2 text-2xl font-semibold leading-none tracking-tight', accent)}>{value}</div>
+      <div className="mt-2 flex items-center justify-between gap-2 border-t border-ink-800/80 pt-1.5 text-[11px] text-ink-400">
+        <span className="truncate">{sub}</span>
         {delta && delta.value !== 0 && (
-          <span className={cn('num font-medium', delta.value < 0 === (delta.goodWhenNegative ?? true) ? 'text-emerald-300' : 'text-red-300')}>
+          <span
+            className={cn(
+              'num rounded px-1.5 py-0.5 text-[10px] font-semibold',
+              delta.value < 0 === (delta.goodWhenNegative ?? true)
+                ? 'bg-emerald-950/70 text-emerald-300 border border-emerald-800/50'
+                : 'bg-red-950/70 text-red-300 border border-red-800/50',
+            )}
+          >
             {delta.value > 0 ? '+' : ''}
             {delta.value}
           </span>

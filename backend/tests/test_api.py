@@ -88,6 +88,15 @@ def test_export_json_and_csv(client):
     assert lines[0].startswith("flight_id") and len(lines) == 71
 
 
+def test_security_headers(client):
+    r = client.get("/api/health")
+    assert r.status_code == 200
+    assert r.headers["x-content-type-options"] == "nosniff"
+    assert r.headers["x-frame-options"] == "DENY"
+    assert r.headers["referrer-policy"] == "strict-origin-when-cross-origin"
+    assert "accelerometer=()" in r.headers["permissions-policy"]
+
+
 def test_dispatcher_rule_based_without_key(client):
     j = client.post("/api/dispatcher/recommend", json={"disruptions": [BOM]}).json()
     assert j["source"] == "rule_based" and j["recommendations"]

@@ -1,14 +1,17 @@
-"""Entrypoint for Vercel / ASGI runners: `uvicorn main:app`."""
+"""Minimal ASGI test to isolate runtime environment."""
 
-import sys
-from pathlib import Path
-
-# Ensure the backend directory is in sys.path
-BASE_DIR = Path(__file__).resolve().parent
-if str(BASE_DIR) not in sys.path:
-    sys.path.insert(0, str(BASE_DIR))
-
-from app.main import app, create_app  # noqa: E402
+async def app(scope, receive, send):
+    if scope["type"] == "http":
+        body = b'{"status": "ok", "test": "minimal_asgi"}'
+        await send({
+            "type": "http.response.start",
+            "status": 200,
+            "headers": [
+                (b"content-type", b"application/json"),
+                (b"access-control-allow-origin", b"*"),
+            ],
+        })
+        await send({"type": "http.response.body", "body": body, "more_body": False})
 
 handler = app
-__all__ = ["app", "handler", "create_app"]
+__all__ = ["app", "handler"]

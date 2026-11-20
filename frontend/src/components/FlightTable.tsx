@@ -37,10 +37,12 @@ export function FlightTable({
   const tails = useMemo(() => [...Object.keys(network.rotations), ...network.spare_aircraft.map((s) => s.tail_id)], [network])
 
   const th = (label: string, key?: SortKey, cls?: string) => (
-    <th className={cn('sticky top-0 z-10 bg-ink-850 px-2.5 py-2 text-left font-medium', cls)}>
+    <th scope="col" className={cn('sticky top-0 z-10 bg-ink-850 px-2.5 py-2 text-left font-medium', cls)}>
       {key ? (
         <button
-          className="inline-flex cursor-pointer items-center gap-1 hover:text-ink-100"
+          type="button"
+          aria-label={`Sort by ${label}`}
+          className="inline-flex cursor-pointer items-center gap-1 hover:text-ink-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-sky-accent rounded"
           onClick={() => setSort((s) => ({ key, dir: s.key === key ? (-s.dir as 1 | -1) : 1 }))}
         >
           {label}

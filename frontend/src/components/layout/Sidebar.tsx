@@ -17,7 +17,7 @@ export function Logo({ compact = false }: { compact?: boolean }) {
       {!compact && (
         <div className="leading-tight">
           <div className="text-[15px] font-bold tracking-tight text-ink-100">
-            Turbulence<span className="text-sky-accent">X</span>
+            Domino<span className="text-sky-accent">Sky</span>
           </div>
           <div className="text-[9px] uppercase tracking-[0.2em] font-medium text-ink-400">Flight Ops Center</div>
         </div>

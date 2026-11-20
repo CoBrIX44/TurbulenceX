@@ -87,7 +87,7 @@ def create_app() -> FastAPI:
         title="Domino Sky API",
         version="1.0.0",
         description="Deterministic flight disruption cascade & recovery simulator",
-        lifespan=lifespan,
+        lifespan=None,
     )
     app.add_middleware(SecurityHeadersMiddleware)
     app.add_middleware(

@@ -30,11 +30,14 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
-    report = validate_network(get_network())
-    for c in report.checks:
-        if not c.passed:
-            log.warning("Dataset check failed: %s — %s", c.title, "; ".join(c.issues))
-    log.info("Dataset loaded (sha256 %s), valid=%s", report.checksum[:12], report.valid)
+    try:
+        report = validate_network(get_network())
+        for c in report.checks:
+            if not c.passed:
+                log.warning("Dataset check failed: %s — %s", c.title, "; ".join(c.issues))
+        log.info("Dataset loaded (sha256 %s), valid=%s", report.checksum[:12], report.valid)
+    except Exception as exc:
+        log.error("Failed to load/validate network during lifespan startup: %s", exc)
     yield
 
 
@@ -54,6 +57,16 @@ def create_app() -> FastAPI:
         allow_headers=["Content-Type", "Authorization", "Accept", "Origin", "X-Requested-With"],
     )
     app.include_router(router)
+
+    # Mirror routes without the /api prefix in case an upstream proxy or rewrite strips it
+    for r in list(router.routes):
+        r_path = getattr(r, "path", "")
+        if r_path.startswith("/api/"):
+            subpath = r_path[4:]
+            methods = list(getattr(r, "methods", []))
+            endpoint = getattr(r, "endpoint", None)
+            if endpoint and methods:
+                app.add_api_route(subpath, endpoint, methods=methods, include_in_schema=False)
 
     return app
 

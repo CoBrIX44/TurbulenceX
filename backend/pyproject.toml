@@ -20,3 +20,6 @@ ignore = ["B008", "UP007", "UP045", "E501", "B905", "B007", "UP042"]
 python_version = "3.11"
 plugins = ["pydantic.mypy"]
 ignore_missing_imports = true
+
+[tool.vercel]
+entrypoint = "main:app"

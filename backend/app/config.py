@@ -29,7 +29,22 @@ class Settings(BaseSettings):
     @field_validator("dataset_path")
     @classmethod
     def _resolve_dataset(cls, v: Path) -> Path:
-        return v if v.is_absolute() else (BACKEND_DIR / v).resolve()
+        resolved = v if v.is_absolute() else (BACKEND_DIR / v).resolve()
+        if resolved.exists():
+            return resolved
+        candidates = [
+            BACKEND_DIR / "data" / "flight_network.json",
+            BACKEND_DIR / "flight_network.json",
+            Path.cwd() / "backend" / "data" / "flight_network.json",
+            Path.cwd() / "data" / "flight_network.json",
+            Path.cwd() / "flight_network.json",
+            Path(__file__).resolve().parents[2] / "flight_network.json",
+            Path(__file__).resolve().parents[2] / "backend" / "data" / "flight_network.json",
+        ]
+        for c in candidates:
+            if c.exists():
+                return c.resolve()
+        return resolved
 
     @field_validator("scenario_store_path")
     @classmethod
@@ -41,6 +56,9 @@ class Settings(BaseSettings):
 
     @property
     def cors_list(self) -> list[str]:
+        import os
+        if self.cors_origins.strip() == "*" or os.environ.get("VERCEL"):
+            return ["*"]
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
 
 

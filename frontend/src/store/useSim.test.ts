@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { useSim } from './useSim'
+import { selectActive, useSim } from './useSim'
 import type { Disruption } from '@/lib/types'
 
 describe('useSim store', () => {
@@ -130,5 +130,30 @@ describe('useSim store', () => {
 
     s.setView('recovered')
     expect(useSim.getState().view).toBe('recovered')
+  })
+
+  it('correctly resolves active simulation result across views and fallbacks', () => {
+    expect(selectActive({ result: null, view: 'disrupted' })).toBeNull()
+
+    const baselineResult = { flights: [{ flight_id: 'F1' }] } as any
+    const disruptedResult = { flights: [{ flight_id: 'F2' }] } as any
+    const recoveredResult = { flights: [{ flight_id: 'F3' }] } as any
+
+    const simRes = {
+      baseline: baselineResult,
+      disrupted: disruptedResult,
+      recovered: null,
+      comparison: {} as any,
+    }
+
+    expect(selectActive({ result: simRes, view: 'baseline' })).toBe(baselineResult)
+    expect(selectActive({ result: simRes, view: 'disrupted' })).toBe(disruptedResult)
+    // recovered is null -> falls back to disrupted
+    expect(selectActive({ result: simRes, view: 'recovered' })).toBe(disruptedResult)
+    expect(selectActive({ result: simRes, view: 'auto' })).toBe(disruptedResult)
+
+    const withRecovered = { ...simRes, recovered: recoveredResult }
+    expect(selectActive({ result: withRecovered, view: 'recovered' })).toBe(recoveredResult)
+    expect(selectActive({ result: withRecovered, view: 'auto' })).toBe(recoveredResult)
   })
 })

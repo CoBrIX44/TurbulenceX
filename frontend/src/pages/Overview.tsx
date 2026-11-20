@@ -34,7 +34,8 @@ import { activeLabel, scenarioKey, selectActive, useSim } from '@/store/useSim'
 
 function ActiveScenario() {
   const s = useSim()
-  const r = selectActive(s)!
+  const r = selectActive(s)
+  if (!r) return null
   const hasDisruptions = r.disruptions.length > 0
 
   return (
@@ -101,9 +102,9 @@ function QuickStart() {
 function RecommendationsPreview() {
   const s = useSim()
   const fresh = s.dispatcher && s.dispatcherKey === scenarioKey(s.scenario)
-  const r = selectActive(s)!
+  const r = selectActive(s)
 
-  if (!r.disruptions.length) {
+  if (!r || !r.disruptions.length) {
     return <p className="text-xs text-ink-400">Automated recommendations activate once a disruption is simulated.</p>
   }
 
@@ -152,11 +153,22 @@ function RecommendationsPreview() {
 
 export function OverviewPage() {
   const s = useSim()
-  const r = selectActive(s)!
-  const k = r.kpis
-  const base = s.result!.baseline.kpis
-  const network = s.network!
   const [filters] = useState<MapFilters>({ routes: 'all', aircraft: true, labels: true })
+  const r = selectActive(s)
+  const network = s.network
+
+  if (!r || !network || !s.result) {
+    return (
+      <Page title="Operations Control Overview" subtitle="Loading operational simulation…">
+        <div className="flex h-64 items-center justify-center gap-2 text-sm text-ink-400">
+          <Spinner /> Loading overview…
+        </div>
+      </Page>
+    )
+  }
+
+  const k = r.kpis
+  const base = s.result.baseline.kpis
   const delayedFlights = r.flights.filter((f) => f.status !== 'on_time')
   const recoveryAirports = recoveryAirportsOf(r, Object.fromEntries(network.spare_aircraft.map((x) => [x.tail_id, x.base])))
 

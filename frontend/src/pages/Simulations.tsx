@@ -6,12 +6,22 @@ import { Page } from '@/components/layout/AppLayout'
 import { PlaybackBar } from '@/components/Playback'
 import { Card, CardBody, CardHeader } from '@/components/ui/card'
 import { Switch } from '@/components/ui/form'
+import { Spinner } from '@/components/ui/misc'
 import { phaseAt } from '@/lib/playback'
 import { selectActive, useSim } from '@/store/useSim'
 
 export function SimulationsPage() {
   const s = useSim()
-  const r = selectActive(s)!
+  const r = selectActive(s)
+  if (!r) {
+    return (
+      <Page title="Simulations" subtitle="Loading simulation engine…">
+        <div className="flex h-64 items-center justify-center gap-2 text-sm text-ink-400">
+          <Spinner /> Initializing simulation environment…
+        </div>
+      </Page>
+    )
+  }
   const t = s.t
   const phases = r.flights.reduce(
     (acc, f) => {

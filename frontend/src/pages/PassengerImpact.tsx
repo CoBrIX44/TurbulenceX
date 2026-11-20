@@ -4,6 +4,7 @@ import { KpiCard } from '@/components/KpiCard'
 import { Page } from '@/components/layout/AppLayout'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardBody, CardHeader } from '@/components/ui/card'
+import { Spinner } from '@/components/ui/misc'
 import { fmt } from '@/lib/time'
 import { cn, n } from '@/lib/utils'
 import { activeLabel, selectActive, useSim } from '@/store/useSim'
@@ -12,7 +13,16 @@ const CONN_TONE = { made: 'ok', missed: 'crit', inbound_cancelled: 'muted', outb
 
 export function PassengerImpactPage() {
   const s = useSim()
-  const r = selectActive(s)!
+  const r = selectActive(s)
+  if (!r) {
+    return (
+      <Page title="Passenger Impact Center" subtitle="Loading passenger impact data…">
+        <div className="flex h-64 items-center justify-center gap-2 text-sm text-ink-400">
+          <Spinner /> Loading passenger analysis…
+        </div>
+      </Page>
+    )
+  }
   const k = r.kpis
   const byId = Object.fromEntries(r.flights.map((f) => [f.flight_id, f]))
   const conns = [...r.connections].sort(

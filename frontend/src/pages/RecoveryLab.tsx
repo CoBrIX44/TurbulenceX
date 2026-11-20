@@ -12,16 +12,14 @@ import { Empty, Spinner } from '@/components/ui/misc'
 import { api } from '@/lib/api'
 import { describeAction } from '@/lib/labels'
 import { fmt } from '@/lib/time'
-import type { EvaluatedAction, RecoveryAction } from '@/lib/types'
+import type { EvaluatedAction, NetworkData, RecoveryAction, SimulationResult } from '@/lib/types'
 import { cn, n } from '@/lib/utils'
 import { scenarioInput, useSim } from '@/store/useSim'
 
 type Kind = RecoveryAction['type']
 
-function ActionBuilder() {
+function ActionBuilder({ network, current }: { network: NetworkData; current: SimulationResult }) {
   const s = useSim()
-  const network = s.network!
-  const current = s.result!.recovered ?? s.result!.disrupted
   const [kind, setKind] = useState<Kind>('deploy_spare')
   const usedSpares = new Set(s.scenario.actions.flatMap((a) => (a.type === 'deploy_spare' ? [a.spare_tail] : [])))
   const firstFree = network.spare_aircraft.find((x) => !usedSpares.has(x.tail_id))?.tail_id ?? network.spare_aircraft[0].tail_id
@@ -437,9 +435,19 @@ function Suggestions() {
 
 export function RecoveryLabPage() {
   const s = useSim()
-  const res = s.result!
-  const outcomes = res.recovered?.actions ?? []
   const [label, setLabel] = useState('')
+  if (!s.result || !s.network) {
+    return (
+      <Page title="Recovery Lab" subtitle="Loading recovery laboratory…">
+        <div className="flex h-64 items-center justify-center gap-2 text-sm text-ink-400">
+          <Spinner /> Initializing recovery simulation…
+        </div>
+      </Page>
+    )
+  }
+  const res = s.result
+  const network = s.network
+  const outcomes = res.recovered?.actions ?? []
   if (!s.scenario.disruptions.length)
     return (
       <Page title="Recovery Lab" subtitle="Compare baseline, disrupted and recovered operations">
@@ -477,7 +485,7 @@ export function RecoveryLabPage() {
     >
       <div className="grid gap-4 xl:grid-cols-[1.1fr_1fr]">
         <div className="space-y-4">
-          <ActionBuilder />
+          <ActionBuilder network={network} current={res.recovered ?? res.disrupted} />
           <Card>
             <CardHeader
               icon={<Layers className="h-4 w-4" />}

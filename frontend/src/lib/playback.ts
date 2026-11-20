@@ -14,13 +14,16 @@ export function phaseAt(f: FlightResult, t: number): Phase {
   return 'scheduled'
 }
 
-export function timelineBounds(r: SimulationResult): [number, number] {
-  const flights = [...r.flights, ...r.ferries]
-  const starts = flights.map((f) => f.sched_dep)
-  const ends = flights.map((f) => f.actual_arr ?? f.sched_arr)
+export function timelineBounds(r?: SimulationResult | null): [number, number] {
+  if (!r || !Array.isArray(r.flights)) return [300, 1440]
+  const flights = [...r.flights, ...(r.ferries ?? [])]
+  if (flights.length === 0) return [300, 1440]
+  const starts = flights.map((f) => f.sched_dep).filter((v) => typeof v === 'number' && !Number.isNaN(v))
+  const ends = flights.map((f) => f.actual_arr ?? f.sched_arr).filter((v) => typeof v === 'number' && !Number.isNaN(v))
+  if (starts.length === 0 || ends.length === 0) return [300, 1440]
   const lo = Math.floor((Math.min(...starts) - 30) / 60) * 60
   const hi = Math.ceil((Math.max(...ends) + 30) / 60) * 60
-  return [lo, hi]
+  return [Number.isFinite(lo) ? lo : 300, Number.isFinite(hi) ? hi : 1440]
 }
 
 export interface PlanePosition {

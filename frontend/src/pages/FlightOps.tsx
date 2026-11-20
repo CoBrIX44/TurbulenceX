@@ -3,12 +3,22 @@ import { FlightTable } from '@/components/FlightTable'
 import { Page } from '@/components/layout/AppLayout'
 import { Button } from '@/components/ui/button'
 import { Card, CardBody } from '@/components/ui/card'
+import { Spinner } from '@/components/ui/misc'
 import { api } from '@/lib/api'
 import { activeLabel, scenarioInput, selectActive, useSim } from '@/store/useSim'
 
 export function FlightOpsPage() {
   const s = useSim()
-  const r = selectActive(s)!
+  const r = selectActive(s)
+  if (!r || !s.network) {
+    return (
+      <Page title="Flight Operations" subtitle="Loading flight schedule…">
+        <div className="flex h-64 items-center justify-center gap-2 text-sm text-ink-400">
+          <Spinner /> Loading flights…
+        </div>
+      </Page>
+    )
+  }
   return (
     <Page
       title="Flight Operations"
@@ -25,7 +35,7 @@ export function FlightOpsPage() {
     >
       <Card>
         <CardBody>
-          <FlightTable flights={r.flights} network={s.network!} maxHeight={720} />
+          <FlightTable flights={r.flights} network={s.network} maxHeight={720} />
         </CardBody>
       </Card>
     </Page>

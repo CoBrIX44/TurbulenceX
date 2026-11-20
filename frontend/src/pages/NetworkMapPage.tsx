@@ -8,7 +8,7 @@ import { StatusBadge } from '@/components/StatusBadge'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardBody, CardHeader } from '@/components/ui/card'
 import { Segmented, Switch } from '@/components/ui/form'
-import { Empty } from '@/components/ui/misc'
+import { Empty, Spinner } from '@/components/ui/misc'
 import { AIRPORT_STATE_COLOR } from '@/lib/labels'
 import { airportStateAt, recoveryAirportsOf } from '@/lib/playback'
 import { fmt } from '@/lib/time'
@@ -16,17 +16,30 @@ import { selectActive, useSim } from '@/store/useSim'
 
 export function NetworkMapPage() {
   const s = useSim()
-  const r = selectActive(s)!
-  const network = s.network!
+  const r = selectActive(s)
+  const network = s.network
   const [filters, setFilters] = useState<MapFilters>({ routes: 'all', aircraft: true, labels: true })
   const [airport, setAirport] = useState<string | null>(null)
   const [route, setRoute] = useState<string | null>(null)
-  const recoveryAirports = useMemo(() => recoveryAirportsOf(r, Object.fromEntries(network.spare_aircraft.map((x) => [x.tail_id, x.base]))), [r, network])
-  const ap = airport ? network.airports.find((a) => a.id === airport) : null
-  const apRes = airport ? r.airports.find((a) => a.airport === airport) : null
-  const routeFlights = route ? r.flights.filter((f) => routeKey(f.origin, f.destination) === route).sort((a, b) => a.sched_dep - b.sched_dep) : []
-  const apFlights = airport ? r.flights.filter((f) => f.origin === airport || f.destination === airport).sort((a, b) => a.sched_dep - b.sched_dep) : []
-  const caps = airport ? r.capacity.filter((c) => c.airport === airport && (c.actual_movements || c.scheduled_movements || c.restricted)) : []
+  const recoveryAirports = useMemo(
+    () => (r && network ? recoveryAirportsOf(r, Object.fromEntries(network.spare_aircraft.map((x) => [x.tail_id, x.base]))) : new Set<string>()),
+    [r, network],
+  )
+  const ap = airport && network ? network.airports.find((a) => a.id === airport) : null
+  const apRes = airport && r ? r.airports.find((a) => a.airport === airport) : null
+  const routeFlights = route && r ? r.flights.filter((f) => routeKey(f.origin, f.destination) === route).sort((a, b) => a.sched_dep - b.sched_dep) : []
+  const apFlights = airport && r ? r.flights.filter((f) => f.origin === airport || f.destination === airport).sort((a, b) => a.sched_dep - b.sched_dep) : []
+  const caps = airport && r ? r.capacity.filter((c) => c.airport === airport && (c.actual_movements || c.scheduled_movements || c.restricted)) : []
+
+  if (!r || !network) {
+    return (
+      <Page title="Interactive Network Map" subtitle="Loading route network…">
+        <div className="flex h-64 items-center justify-center gap-2 text-sm text-ink-400">
+          <Spinner /> Loading network map…
+        </div>
+      </Page>
+    )
+  }
 
   return (
     <Page

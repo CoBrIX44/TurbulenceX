@@ -30,9 +30,11 @@ function useBadgeCounts(): Record<string, number | undefined> {
   const result = useSim((s) => s.result)
   const counts: Record<string, number | undefined> = {}
   if (result) {
-    const k = (result.recovered ?? result.disrupted).kpis
-    counts['/flights'] = k.delayed + k.cancelled || undefined
-    counts['/passengers'] = k.missed_connections || undefined
+    const k = (result.recovered ?? result.disrupted ?? result.baseline)?.kpis
+    if (k) {
+      counts['/flights'] = k.delayed + k.cancelled || undefined
+      counts['/passengers'] = k.missed_connections || undefined
+    }
   }
   return counts
 }

@@ -135,6 +135,10 @@ export const useSim = create<SimState>((set, get) => ({
         set({ network, presets, model, bootError: null })
         await get().refreshSaved()
         await get().run()
+        const currentState = get()
+        if (currentState.runError && !currentState.result) {
+          set({ bootError: currentState.runError })
+        }
       } catch (e) {
         set({ bootError: (e as Error).message })
       }
@@ -157,7 +161,10 @@ export const useSim = create<SimState>((set, get) => ({
     set({ running: true, runError: null })
     try {
       const result = await api.simulate(scenarioInput(scenario))
-      const active = result.recovered ?? result.disrupted
+      if (!result || (!result.disrupted && !result.baseline)) {
+        throw new Error('Simulation API returned an invalid response structure.')
+      }
+      const active = result.recovered ?? result.disrupted ?? result.baseline
       const [lo] = timelineBounds(active)
       const keepT = get().result !== null
       set({ result, running: false, dirty: false, lastRunAt: Date.now(), t: keepT ? get().t : lo })
@@ -282,10 +289,10 @@ export const useSim = create<SimState>((set, get) => ({
 export function selectActive(s: Pick<SimState, 'result' | 'view'>): SimulationResult | null {
   const r = s.result
   if (!r) return null
-  if (s.view === 'baseline') return r.baseline
-  if (s.view === 'disrupted') return r.disrupted
-  if (s.view === 'recovered') return r.recovered ?? r.disrupted
-  return r.recovered ?? r.disrupted
+  if (s.view === 'baseline') return r.baseline ?? null
+  if (s.view === 'disrupted') return r.disrupted ?? null
+  if (s.view === 'recovered') return r.recovered ?? r.disrupted ?? null
+  return r.recovered ?? r.disrupted ?? r.baseline ?? null
 }
 
 export function activeLabel(s: Pick<SimState, 'result' | 'view'>): string {

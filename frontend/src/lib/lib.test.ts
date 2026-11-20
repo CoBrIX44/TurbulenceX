@@ -139,6 +139,9 @@ describe('playback derivations', () => {
   })
   it('computes timeline bounds on the hour', () => {
     expect(timelineBounds(result)).toEqual([540, 780])
+    expect(timelineBounds(null)).toEqual([300, 1440])
+    expect(timelineBounds(undefined)).toEqual([300, 1440])
+    expect(timelineBounds({ flights: [], ferries: [] } as any)).toEqual([300, 1440])
   })
   it('bearing points south-west from DEL to BOM', () => {
     const b = bearing(airports.DEL, airports.BOM)

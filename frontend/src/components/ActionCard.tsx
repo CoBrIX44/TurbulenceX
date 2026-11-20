@@ -13,7 +13,7 @@ export function ChecksList({ checks }: { checks: Check[] }) {
         <li key={i} className="flex items-start gap-1.5 text-[11px]">
           {c.passed ? <CheckCircle2 className="mt-px h-3.5 w-3.5 shrink-0 text-ok" /> : <XCircle className="mt-px h-3.5 w-3.5 shrink-0 text-crit" />}
           <span className="text-ink-300">
-            <span className="font-mono text-ink-500">{c.check}</span> — {c.detail}
+            <span className="font-mono text-ink-500">{c.check}</span>: {c.detail}
           </span>
         </li>
       ))}

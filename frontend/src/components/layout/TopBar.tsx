@@ -156,7 +156,7 @@ export function TopBar({ onOpenMobile }: { onOpenMobile?: () => void }) {
       <div className="ml-auto flex items-center gap-2">
         {s.dirty && (
           <span className="rounded bg-amber-950/80 border border-amber-800/60 px-2 py-0.5 text-[11px] font-medium text-amber-300">
-            Inputs changed — run required
+            Inputs changed: run required
           </span>
         )}
         <Button variant="ghost" size="sm" onClick={() => void s.saveScenario()} title="Save scenario" aria-label="Save scenario">

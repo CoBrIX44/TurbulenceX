@@ -122,7 +122,7 @@ export function PassengerImpactPage() {
                         <td className="num px-2.5 py-1.5 text-ink-300">{fmt(b.actual_dep)}</td>
                         <td className="num px-2.5 py-1.5">{c.passengers}</td>
                         <td className={cn('num px-2.5 py-1.5', c.status === 'made' ? 'text-ink-300' : 'text-red-300')}>
-                          {c.actual_connect_minutes ?? '—'} / {c.min_connect_minutes}m
+                          {c.actual_connect_minutes ?? '-'} / {c.min_connect_minutes}m
                         </td>
                         <td className="px-2.5 py-1.5">
                           <Badge tone={CONN_TONE[c.status]}>{c.status.replace('_', ' ')}</Badge>

@@ -1,5 +1,5 @@
 // Pure helpers that derive *display* state at a simulated time t from engine results.
-// They never compute operational numbers — only interpolate positions/phases between
+// They never compute operational numbers: only interpolate positions and phases between
 // engine-provided actual departure and arrival times.
 import type { Airport, AirportState, CapacityBucket, Disruption, FlightResult, SimEvent, SimulationResult } from './types'
 import { parseHHMM } from './time'

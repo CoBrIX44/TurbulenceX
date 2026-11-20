@@ -37,7 +37,7 @@ export function sortFlights(flights: FlightResult[], key: SortKey, dir: 1 | -1):
   })
 }
 
-/** Walk delay_parents backwards (causes) — returns ordered chain ending with the flight. */
+/** Walk delay_parents backwards (causes): returns ordered chain ending with the flight. */
 export function traceBackward(byId: Record<string, FlightResult>, id: string): string[] {
   const chain: string[] = []
   const seen = new Set<string>()

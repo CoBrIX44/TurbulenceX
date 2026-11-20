@@ -230,7 +230,7 @@ def apply_deploy_spare(net: Network, plan: OperatingPlan, idx: int, action: Depl
     free = action.spare_tail not in plan.deployed_spares
     checks.append(_check("not_already_deployed", free, f"{spare.tail_id} {'is available' if free else 'is already assigned in this scenario'}"))
     if not free:
-        return fail(f"{spare.tail_id} already deployed — overlapping assignment rejected")
+        return fail(f"{spare.tail_id} already deployed: overlapping assignment rejected")
     if action.replace_tail not in plan.legs_by_tail or action.replace_tail in plan.spare_tails:
         checks.append(_check("replace_tail_valid", False, f"{action.replace_tail} is not an active aircraft"))
         return fail(f"{action.replace_tail} is not an active aircraft")

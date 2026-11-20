@@ -155,7 +155,7 @@ export function FlightTable({
                     f.arr_delay >= 60 ? 'text-red-300' : f.arr_delay >= 15 ? 'text-amber-300' : 'text-ink-300',
                   )}
                 >
-                  {f.status === 'cancelled' ? '—' : `${Math.max(f.dep_delay, f.arr_delay)}m`}
+                  {f.status === 'cancelled' ? '-' : `${Math.max(f.dep_delay, f.arr_delay)}m`}
                 </td>
                 <td className="num px-2.5 py-1.5 text-right text-ink-300">{f.pax}</td>
                 <td className="px-2.5 py-1.5">

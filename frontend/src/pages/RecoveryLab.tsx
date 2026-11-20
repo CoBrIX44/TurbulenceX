@@ -116,7 +116,7 @@ function ActionBuilder({ network, current }: { network: NetworkData; current: Si
               >
                 {network.spare_aircraft.map((x) => (
                   <option key={x.tail_id} value={x.tail_id} disabled={usedSpares.has(x.tail_id)}>
-                    {x.tail_id} ({x.base}){usedSpares.has(x.tail_id) ? ' — in use' : ''}
+                    {x.tail_id} ({x.base}){usedSpares.has(x.tail_id) ? ' (in use)' : ''}
                   </option>
                 ))}
               </Select>
@@ -288,7 +288,7 @@ function ActionBuilder({ network, current }: { network: NetworkData; current: Si
               />
             ) : (
               <div className="rounded-xl border border-crit/40 bg-crit/5 p-3.5">
-                <div className="mb-2 text-sm font-semibold text-red-200">Infeasible — {preview.message}</div>
+                <div className="mb-2 text-sm font-semibold text-red-200">Infeasible: {preview.message}</div>
                 <ChecksList checks={preview.checks} />
               </div>
             )}
@@ -314,20 +314,20 @@ function Comparison() {
       <CardHeader
         icon={<GitCompare className="h-4 w-4" />}
         title="Before / after comparison"
-        subtitle="Baseline (no disruption) · Disrupted · Recovered (with applied actions) — all computed by the engine"
+        subtitle="Baseline (no disruption) · Disrupted · Recovered (with applied actions), all computed by the engine"
       />
       <CardBody className="space-y-4">
         <div className="grid grid-cols-2 gap-3">
           <div className="rounded-xl border border-recover/40 bg-recover/5 p-3 text-center">
             <div className="num text-3xl font-semibold text-emerald-200" data-testid="recovery-pct">
-              {hasRec && c.network_recovery_pct !== null ? `${c.network_recovery_pct}%` : '—'}
+              {hasRec && c.network_recovery_pct !== null ? `${c.network_recovery_pct}%` : '-'}
             </div>
             <div className="text-[11px] uppercase tracking-wider text-ink-400">Network recovery</div>
             <div className="mt-1 text-[10px] text-ink-500">Share of the disruption’s passenger impact index removed</div>
           </div>
           <div className="rounded-xl border border-ink-700 bg-ink-900 p-3 text-center">
             <div className="num text-3xl font-semibold text-cyan-200">
-              {hasRec && c.delay_minutes_recovery_pct !== null ? `${c.delay_minutes_recovery_pct}%` : '—'}
+              {hasRec && c.delay_minutes_recovery_pct !== null ? `${c.delay_minutes_recovery_pct}%` : '-'}
             </div>
             <div className="text-[11px] uppercase tracking-wider text-ink-400">Delay minutes recovered</div>
             <div className="mt-1 text-[10px] text-ink-500">Reduction in total arrival-delay minutes</div>
@@ -364,7 +364,7 @@ function Comparison() {
                               : 'text-red-300',
                     )}
                   >
-                    {r.recovered === undefined ? '—' : n(r.recovered)}
+                    {r.recovered === undefined ? '-' : n(r.recovered)}
                   </td>
                 </tr>
               ))}
@@ -471,7 +471,7 @@ export function RecoveryLabPage() {
   return (
     <Page
       title="Recovery Lab"
-      subtitle="Apply feasible recovery actions — the simulation re-runs after every change"
+      subtitle="Apply feasible recovery actions; the simulation re-runs after every change"
       actions={
         <>
           <Button variant="outline" size="sm" onClick={() => void s.undoAction()} disabled={!s.scenario.actions.length || s.running} data-testid="undo-action">
@@ -498,7 +498,7 @@ export function RecoveryLabPage() {
                   <Spinner /> Re-simulating…
                 </div>
               )}
-              {outcomes.length === 0 && <p className="text-xs text-ink-400">No actions applied — Recovered equals Disrupted.</p>}
+              {outcomes.length === 0 && <p className="text-xs text-ink-400">No actions applied: Recovered equals Disrupted.</p>}
               {outcomes.map((o, i) => (
                 <div key={i} className="flex items-start gap-2 rounded-lg border border-ink-700 bg-ink-900 p-2.5 text-xs">
                   <span className="num mt-0.5 text-ink-500">{i + 1}</span>
@@ -571,7 +571,7 @@ export function RecoveryLabPage() {
                             <td className="num px-2 py-1.5">{st.kpis.missed_connections}</td>
                             <td className="num px-2 py-1.5">{st.kpis.crew_violations}</td>
                             <td className="num px-2 py-1.5">{st.kpis.spares_used}</td>
-                            <td className="num px-2 py-1.5 text-emerald-300">{st.recoveryPct !== null && st.actions.length ? `${st.recoveryPct}%` : '—'}</td>
+                            <td className="num px-2 py-1.5 text-emerald-300">{st.recoveryPct !== null && st.actions.length ? `${st.recoveryPct}%` : '-'}</td>
                             <td className="px-2 py-1.5">
                               <div className="flex gap-1">
                                 <Button size="sm" variant="ghost" aria-label={`Load strategy ${st.label}`} onClick={() => void s.loadStrategy(i)}>

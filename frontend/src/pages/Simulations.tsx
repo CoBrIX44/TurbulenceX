@@ -60,7 +60,7 @@ export function SimulationsPage() {
         </div>
         <div className="space-y-4">
           <Card>
-            <CardHeader title="Simulation playback" subtitle="Simulated operating time — not live flight tracking" />
+            <CardHeader title="Simulation playback" subtitle="Simulated operating time: not live flight tracking" />
             <CardBody className="space-y-3">
               <PlaybackBar />
               <div className="grid grid-cols-3 gap-2 text-center text-xs sm:grid-cols-7" data-testid="phase-counts">
@@ -92,7 +92,7 @@ export function SimulationsPage() {
             </CardBody>
           </Card>
           <Card>
-            <CardHeader title="Event log" subtitle="Synchronised with playback — click an event to jump and inspect" />
+            <CardHeader title="Event log" subtitle="Synchronised with playback (click an event to jump and inspect)" />
             <CardBody>
               <EventLog events={r.events} t={t} height={420} />
             </CardBody>

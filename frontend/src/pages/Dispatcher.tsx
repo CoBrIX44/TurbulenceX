@@ -76,7 +76,7 @@ export function DispatcherPage() {
               <CardBody className="space-y-2 text-sm leading-relaxed text-ink-200">
                 {stale && (
                   <div className="flex items-center gap-2 rounded-md border border-warn/40 bg-warn/5 px-2.5 py-1.5 text-xs text-amber-200">
-                    <AlertTriangle className="h-3.5 w-3.5" /> Scenario changed since this analysis — re-analyse for current recommendations.
+                    <AlertTriangle className="h-3.5 w-3.5" /> Scenario changed since this analysis: re-analyse for current recommendations.
                   </div>
                 )}
                 {d.provider_error && (
@@ -90,7 +90,7 @@ export function DispatcherPage() {
                 )}
                 {d.unverified_numbers.length > 0 && (
                   <div className="rounded-md border border-crit/40 bg-crit/5 px-2.5 py-1.5 text-xs text-red-200">
-                    Unverified figures in the LLM narrative (not present in engine output): {d.unverified_numbers.join(', ')} — disregard them.
+                    Unverified figures in the LLM narrative (not present in engine output): {d.unverified_numbers.join(', ')} (disregard them).
                   </div>
                 )}
               </CardBody>
@@ -130,7 +130,7 @@ export function DispatcherPage() {
                 <CardBody className="space-y-1.5">
                   {d.rejected.map((x, i) => (
                     <div key={i} className="text-xs text-ink-400">
-                      <span className="font-mono text-ink-500">{JSON.stringify(x.proposal)}</span> — {x.reason}
+                      <span className="font-mono text-ink-500">{JSON.stringify(x.proposal)}</span>: {x.reason}
                     </div>
                   ))}
                 </CardBody>

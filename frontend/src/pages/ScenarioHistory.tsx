@@ -179,7 +179,7 @@ export function ScenarioHistoryPage() {
           </CardBody>
         </Card>
         <Card>
-          <CardHeader title="Scenario templates" subtitle="Inputs only — results are computed when loaded" />
+          <CardHeader title="Scenario templates" subtitle="Inputs only: results are computed when loaded" />
           <CardBody className="space-y-2">
             {s.presets.map((p) => (
               <button
@@ -232,7 +232,7 @@ export function ScenarioHistoryPage() {
                   <td className="px-2 py-1.5 text-ink-300 font-medium">Network recovery %</td>
                   {cmp.map((c) => (
                     <td key={c.name} className="num px-2 py-1.5 text-right text-emerald-300">
-                      {c.recovery !== null ? `${c.recovery}%` : '—'}
+                      {c.recovery !== null ? `${c.recovery}%` : '-'}
                     </td>
                   ))}
                 </tr>

@@ -75,7 +75,7 @@ function CausalGraph({ result, flight }: { result: SimulationResult; flight: Fli
     }
     return { nodes, edges }
   }, [result, flight])
-  if (nodes.length <= 1) return <p className="text-xs text-ink-400">No causal dependencies — this flight’s timing does not depend on another delayed flight.</p>
+  if (nodes.length <= 1) return <p className="text-xs text-ink-400">No causal dependencies: this flight's timing does not depend on another delayed flight.</p>
   return (
     <div className="h-64 rounded-lg border border-ink-700 bg-ink-950" data-testid="causal-graph">
       <ReactFlow

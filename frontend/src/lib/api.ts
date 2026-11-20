@@ -33,14 +33,19 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   }
   if (!res.ok) {
     let msg = `${res.status} ${res.statusText}`.trim()
+    const text = await res.text().catch(() => '')
     try {
-      const body = await res.json()
+      const body = JSON.parse(text)
       if (typeof body.detail === 'string') msg = body.detail
       else if (typeof body.error === 'string') msg = body.error
       else if (Array.isArray(body.detail))
         msg = body.detail.map((d: { loc?: unknown[]; msg: string }) => `${(d.loc ?? []).slice(1).join('.')}: ${d.msg}`).join('; ')
     } catch {
-      /* non-JSON error */
+      // Non-JSON body: the request never reached FastAPI's error handler
+      // (dev proxy could not connect, or the serverless function crashed on start).
+      if (res.status === 502 || res.status === 504) msg = `HTTP ${res.status}: the API server is not reachable. Is the backend running on port 8000?`
+      else if (res.status >= 500)
+        msg = `HTTP ${res.status}: the API server failed before it could answer${text ? ` (${text.replace(/\s+/g, ' ').trim().slice(0, 160)})` : ''}. Check the backend / deployment logs.`
     }
     throw new ApiError(res.status, msg || `HTTP ${res.status}`)
   }

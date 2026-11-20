@@ -187,7 +187,7 @@ export const useSim = create<SimState>((set, get) => ({
     const r = get().result?.recovered
     const out = r?.actions[r.actions.length - 1]
     if (out && !out.applied) {
-      // Engine rejected it — remove so the plan only contains feasible actions.
+      // Engine rejected it: remove so the plan only contains feasible actions.
       set((s) => ({ scenario: { ...s.scenario, actions: s.scenario.actions.slice(0, -1) } }))
       get().notify('error', `Rejected by engine: ${out.message}`)
       await get().run()
@@ -297,7 +297,7 @@ export function selectActive(s: Pick<SimState, 'result' | 'view'>): SimulationRe
 
 export function activeLabel(s: Pick<SimState, 'result' | 'view'>): string {
   const r = s.result
-  if (!r) return '—'
+  if (!r) return '-'
   if (s.view === 'baseline') return 'Baseline'
   if (s.view === 'disrupted' || !r.recovered) return r.disrupted.disruptions.length ? 'Disrupted' : 'Baseline'
   return 'Recovered'

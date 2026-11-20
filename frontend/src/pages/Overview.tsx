@@ -57,7 +57,7 @@ function ActiveScenario() {
           <Badge tone="recover">{s.scenario.actions.length} recovery action(s)</Badge>
         )}
         {!hasDisruptions && (
-          <span className="text-xs text-ink-400">Baseline schedule — fully operational, no disruptions active.</span>
+          <span className="text-xs text-ink-400">Baseline schedule: fully operational, no disruptions active.</span>
         )}
       </div>
     </Card>
@@ -262,7 +262,7 @@ export function OverviewPage() {
       <div className="grid gap-4 xl:grid-cols-[1fr_340px]">
         <Card>
           <CardHeader
-            title="Indian Air Network — Real-Time Spatial Simulation"
+            title="Indian Air Network: Real-Time Spatial Simulation"
             subtitle="Airport nodes and routes for 70 scheduled flights. Scrub timeline below to observe cascade propagation."
             actions={
               <Link to="/map" className="text-xs font-medium text-cyan-300 hover:text-cyan-200 hover:underline">
@@ -311,7 +311,7 @@ export function OverviewPage() {
         <Card className="xl:col-span-6">
           <CardHeader
             title="Disrupted Flight Roster"
-            subtitle="Delayed and cancelled flights — click row to inspect root-cause chain"
+            subtitle="Delayed and cancelled flights (click row to inspect root-cause chain)"
             actions={
               <Link to="/flights" className="text-xs font-medium text-cyan-300 hover:text-cyan-200 hover:underline">
                 View all 70 flights

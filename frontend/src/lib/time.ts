@@ -2,7 +2,7 @@
 export const DAY = 1440
 
 export function fmt(min: number | null | undefined): string {
-  if (min === null || min === undefined) return '—'
+  if (min === null || min === undefined) return '-'
   const day = Math.floor(min / DAY)
   const rem = ((min % DAY) + DAY) % DAY
   const s = `${String(Math.floor(rem / 60)).padStart(2, '0')}:${String(rem % 60).padStart(2, '0')}`

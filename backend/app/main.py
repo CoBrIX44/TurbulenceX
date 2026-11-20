@@ -74,7 +74,7 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
         report = validate_network(net)
         for c in report.checks:
             if not c.passed:
-                log.warning("Dataset check failed: %s — %s", c.title, "; ".join(c.issues))
+                log.warning("Dataset check failed: %s: %s", c.title, "; ".join(c.issues))
         log.info("Dataset loaded (sha256 %s), valid=%s", report.checksum[:12], report.valid)
     except Exception as exc:
         log.error("Failed to load/validate network during lifespan startup: %s", exc)

@@ -58,7 +58,7 @@ describe('time', () => {
   it('formats minutes and next-day times', () => {
     expect(fmt(615)).toBe('10:15')
     expect(fmt(1485)).toBe('00:45 +1')
-    expect(fmt(null)).toBe('—')
+    expect(fmt(null)).toBe('-')
     expect(fmtDelay(75)).toBe('1h 15m')
   })
   it('parses strict HH:MM', () => {

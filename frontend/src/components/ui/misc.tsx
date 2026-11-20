@@ -21,7 +21,7 @@ export function Tip({ text, children, className }: { text: string; children: Rea
   return (
     <span className={cn('group relative inline-flex', className)}>
       {children}
-      <span className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-1.5 w-max max-w-64 -translate-x-1/2 rounded-md border border-ink-600 bg-ink-850 px-2 py-1 text-[11px] leading-snug font-normal text-ink-200 opacity-0 shadow-xl transition-opacity group-hover:opacity-100">
+      <span className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-1.5 w-max max-w-64 -translate-x-1/2 rounded-md border border-ink-600 bg-ink-850 px-2 py-1 text-[11px] leading-snug font-normal text-ink-200 opacity-0 shadow-xl transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
         {text}
       </span>
     </span>

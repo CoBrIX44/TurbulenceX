@@ -50,7 +50,7 @@ export const REASON_LABEL: Record<string, string> = {
   spare_positioning: 'Spare positioning',
   cancelled: 'Cancelled',
   schedule: 'Schedule',
-  '': '—',
+  '': '-',
 }
 
 export function describeAction(a: RecoveryAction): string {
@@ -68,7 +68,7 @@ export function describeAction(a: RecoveryAction): string {
 
 /** Human-readable root cause from the engine's machine id (e.g. "disruption:D1"). */
 export function rootLabel(root: string | null, disruptions: { id: string; airport: string; type: string; start: string; duration_min: number }[]): string {
-  if (!root) return '—'
+  if (!root) return '-'
   if (root.startsWith('disruption:')) {
     const d = disruptions.find((x) => `disruption:${x.id}` === root)
     if (d) return `${d.airport} ${d.type.replaceAll('_', ' ')} from ${d.start} (${d.duration_min}m)`

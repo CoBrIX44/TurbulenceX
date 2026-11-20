@@ -28,7 +28,7 @@ export function SettingsPage() {
           <CardHeader
             icon={<Database className="h-4 w-4" />}
             title="Dataset validation"
-            subtitle="Checks run against flight_network.json — problems are reported, never silently fixed"
+            subtitle="Checks run against flight_network.json: problems are reported, never silently fixed"
           />
           <CardBody className="space-y-2" data-testid="validation-report">
             {err && <p className="text-xs text-red-300">{err}</p>}
@@ -79,7 +79,7 @@ export function SettingsPage() {
                 </>
               ) : (
                 <>
-                  <Badge tone="neutral">No LLM key — deterministic rule-based dispatcher active</Badge>
+                  <Badge tone="neutral">No LLM key: deterministic rule-based dispatcher active</Badge>
                   <p className="text-xs text-ink-400">
                     Set <span className="font-mono">LLM_API_KEY</span> (and optionally <span className="font-mono">LLM_BASE_URL</span>,{' '}
                     <span className="font-mono">LLM_MODEL</span>) in <span className="font-mono">backend/.env</span> and restart the backend.
@@ -104,7 +104,7 @@ export function SettingsPage() {
             </CardBody>
           </Card>
           <Card>
-            <CardHeader icon={<SlidersHorizontal className="h-4 w-4" />} title="Engine parameters" subtitle="Read-only — from the backend" />
+            <CardHeader icon={<SlidersHorizontal className="h-4 w-4" />} title="Engine parameters" subtitle="Read-only (from the backend)" />
             <CardBody className="space-y-1 text-xs">
               {m &&
                 (

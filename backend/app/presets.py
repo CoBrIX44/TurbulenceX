@@ -1,4 +1,4 @@
-"""User-selectable scenario templates (inputs only — results are always computed)."""
+"""User-selectable scenario templates (inputs only: results are always computed)."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ from .engine.models import Disruption, DisruptionType
 PRESETS: list[dict] = [
     {
         "id": "bom-thunderstorm-90",
-        "name": "Mumbai Thunderstorm — 90 minutes",
+        "name": "Mumbai Thunderstorm (90 minutes)",
         "description": "Thunderstorm closes BOM 08:00–09:30 during the morning bank.",
         "disruptions": [
             Disruption(
@@ -23,7 +23,7 @@ PRESETS: list[dict] = [
     },
     {
         "id": "blr-closure-60",
-        "name": "Bengaluru Airport Closure — 60 minutes",
+        "name": "Bengaluru Airport Closure (60 minutes)",
         "description": "BLR closed 14:00–15:00 at the afternoon peak.",
         "disruptions": [
             Disruption(
@@ -38,7 +38,7 @@ PRESETS: list[dict] = [
     },
     {
         "id": "del-capacity-50",
-        "name": "Delhi Capacity Reduction — 50%",
+        "name": "Delhi Capacity Reduction (50%)",
         "description": "DEL hourly capacity halved 06:00–18:00 (40 → 20 movements/hour). Shows how much slot headroom the schedule has.",
         "disruptions": [
             Disruption(

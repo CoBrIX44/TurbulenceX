@@ -81,7 +81,7 @@ export function DisruptionForm({ initial, onSubmit, onCancel }: { initial: Disru
         </Field>
       </div>
       {d.type === 'ground_handling' ? (
-        <Field label={`Severity — extra turnaround: ${d.extra_turnaround_min} min`} error={errors.severity}>
+        <Field label={`Severity: extra turnaround ${d.extra_turnaround_min} min`} error={errors.severity}>
           <input
             type="range"
             aria-label="Extra turnaround minutes"
@@ -99,7 +99,7 @@ export function DisruptionForm({ initial, onSubmit, onCancel }: { initial: Disru
         </div>
       ) : (
         <Field
-          label={`Severity — capacity reduction: ${d.capacity_reduction_pct}%`}
+          label={`Severity: capacity reduction ${d.capacity_reduction_pct}%`}
           error={errors.severity}
           hint={
             cap !== undefined
@@ -161,7 +161,7 @@ export function DisruptionPanel() {
   return (
     <div className="space-y-3">
       {scenario.disruptions.length === 0 && editing !== 'new' && (
-        <p className="text-xs text-ink-400">No disruptions — the network is running its baseline schedule.</p>
+        <p className="text-xs text-ink-400">No disruptions: the network is running its baseline schedule.</p>
       )}
       {scenario.disruptions.map((d) =>
         editing === d.id ? (

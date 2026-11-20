@@ -405,7 +405,7 @@ def simulate(net: Network, scenario: ScenarioInput) -> SimulationResult:
                 DelayComponent(
                     kind="airborne_hold",
                     minutes=hold,
-                    detail=f"Already airborne when restriction began — {air_text[0]}; held airborne until {fmt_minutes(arr)} (no diversion modelled)",
+                    detail=f"Already airborne when restriction began: {air_text[0]}; held airborne until {fmt_minutes(arr)} (no diversion modelled)",
                     disruption_id=air_text[1],
                 )
             )
@@ -501,9 +501,9 @@ def _connections(net: Network, results: dict[str, FlightResult], plan: Operating
         prot = plan.protected.get(c.to_flight, ("",))[0] == c.connection_id
         conn_status: Literal["made", "missed", "inbound_cancelled", "outbound_cancelled"]
         if a.status == FlightStatus.CANCELLED:
-            conn_status, actual, reason = "inbound_cancelled", None, f"Inbound {c.from_flight} cancelled — {c.passengers} passengers cannot reach {c.airport}"
+            conn_status, actual, reason = "inbound_cancelled", None, f"Inbound {c.from_flight} cancelled: {c.passengers} passengers cannot reach {c.airport}"
         elif b.status == FlightStatus.CANCELLED:
-            conn_status, actual, reason = "outbound_cancelled", None, f"Outbound {c.to_flight} cancelled — {c.passengers} passengers stranded at {c.airport}"
+            conn_status, actual, reason = "outbound_cancelled", None, f"Outbound {c.to_flight} cancelled: {c.passengers} passengers stranded at {c.airport}"
         else:
             assert a.actual_arr is not None and b.actual_dep is not None
             actual = b.actual_dep - a.actual_arr
@@ -514,7 +514,7 @@ def _connections(net: Network, results: dict[str, FlightResult], plan: Operating
                 conn_status = "missed"
                 reason = (
                     f"{c.from_flight} arrived {fmt_minutes(a.actual_arr)} ({a.arr_delay} min late); {c.to_flight} departed "
-                    f"{fmt_minutes(b.actual_dep)} — {actual} min available vs {c.min_connect_minutes} min required"
+                    f"{fmt_minutes(b.actual_dep)} ({actual} min available vs {c.min_connect_minutes} min required)"
                 )
         out.append(
             ConnectionResult(

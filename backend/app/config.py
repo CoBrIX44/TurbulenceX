@@ -26,10 +26,17 @@ class Settings(BaseSettings):
     llm_timeout_s: float = 30.0
     llm_max_candidates: int = 12
 
-    @field_validator("dataset_path", "scenario_store_path")
+    @field_validator("dataset_path")
     @classmethod
-    def _resolve(cls, v: Path) -> Path:
-        # Relative paths are resolved against backend/ so the app works from any CWD.
+    def _resolve_dataset(cls, v: Path) -> Path:
+        return v if v.is_absolute() else (BACKEND_DIR / v).resolve()
+
+    @field_validator("scenario_store_path")
+    @classmethod
+    def _resolve_scenario_store(cls, v: Path) -> Path:
+        import os
+        if os.environ.get("VERCEL") and "SCENARIO_STORE_PATH" not in os.environ:
+            return Path("/tmp/scenarios.json")
         return v if v.is_absolute() else (BACKEND_DIR / v).resolve()
 
     @property

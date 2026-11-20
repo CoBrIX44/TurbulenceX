@@ -97,6 +97,7 @@ def load_network(path: str | Path) -> Network:
         if raw is None:
             # Fallback to embedded byte-identical dataset
             from .embedded_dataset import RAW_DATASET_BYTES
+
             raw = RAW_DATASET_BYTES
 
     assert raw is not None

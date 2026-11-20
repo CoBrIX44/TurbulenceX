@@ -32,16 +32,17 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     throw new ApiError(0, 'Cannot reach the Domino Sky API. Is the backend running on port 8000?')
   }
   if (!res.ok) {
-    let msg = `${res.status} ${res.statusText}`
+    let msg = `${res.status} ${res.statusText}`.trim()
     try {
       const body = await res.json()
       if (typeof body.detail === 'string') msg = body.detail
+      else if (typeof body.error === 'string') msg = body.error
       else if (Array.isArray(body.detail))
         msg = body.detail.map((d: { loc?: unknown[]; msg: string }) => `${(d.loc ?? []).slice(1).join('.')}: ${d.msg}`).join('; ')
     } catch {
       /* non-JSON error */
     }
-    throw new ApiError(res.status, msg)
+    throw new ApiError(res.status, msg || `HTTP ${res.status}`)
   }
   if (res.status === 204) return undefined as T
   return (await res.json()) as T

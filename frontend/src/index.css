@@ -1,0 +1,142 @@
+@import 'tailwindcss';
+@import 'leaflet/dist/leaflet.css';
+@import '@xyflow/react/dist/style.css';
+
+/* Domino Sky design tokens — see DESIGN_SYSTEM.md */
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --color-ink-950: #050b16;
+  --color-ink-900: #081123;
+  --color-ink-850: #0b172c;
+  --color-ink-800: #0f1d35;
+  --color-ink-700: #16284a;
+  --color-ink-600: #22375e;
+  --color-ink-500: #37507c;
+  --color-ink-400: #6b82a8;
+  --color-ink-300: #93a6c6;
+  --color-ink-200: #c3d0e6;
+  --color-ink-100: #e6eefb;
+
+  --color-sky-accent: #22d3ee;
+  --color-electric: #3b82f6;
+  --color-warn: #f59e0b;
+  --color-crit: #ef4444;
+  --color-ok: #22c55e;
+  --color-ai: #a78bfa;
+  --color-recover: #34d399;
+
+  --animate-pulse-slow: pulse 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-fade-in: fade-in 0.25s ease-out both;
+  --animate-slide-in: slide-in 0.25s ease-out both;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(34, 211, 238, 0.07), transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, rgba(59, 130, 246, 0.06), transparent 60%), var(--color-ink-950);
+  color: var(--color-ink-100);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Subtle scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-ink-600) transparent;
+}
+
+/* Leaflet dark styling — OpenStreetMap tiles inverted to a navy palette */
+.leaflet-container {
+  background: #07101f;
+  font-family: var(--font-sans);
+}
+.dark-tiles {
+  filter: invert(1) hue-rotate(195deg) brightness(0.62) contrast(1.15) saturate(0.55);
+}
+.leaflet-control-attribution {
+  background: rgba(8, 17, 35, 0.75) !important;
+  color: var(--color-ink-400) !important;
+}
+.leaflet-control-attribution a {
+  color: var(--color-ink-300) !important;
+}
+.leaflet-bar a {
+  background: var(--color-ink-800) !important;
+  color: var(--color-ink-100) !important;
+  border-color: var(--color-ink-600) !important;
+}
+.leaflet-tooltip.ds-tip {
+  background: var(--color-ink-850);
+  color: var(--color-ink-100);
+  border: 1px solid var(--color-ink-600);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  font-size: 12px;
+}
+.leaflet-tooltip.ds-tip::before {
+  display: none;
+}
+.ds-airport-label {
+  font: 600 10px var(--font-mono);
+  color: var(--color-ink-200);
+  text-shadow: 0 1px 2px #000;
+  white-space: nowrap;
+}
+.ds-plane {
+  transition: transform 0.35s linear;
+}
+
+/* React Flow dark */
+.react-flow__attribution {
+  display: none;
+}
+.react-flow__edge-path {
+  stroke-width: 1.6;
+}
+
+@keyframes ds-ping {
+  75%,
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "turbulencex",
+  "version": "1.0.0",
+  "private": true,
+  "description": "TurbulenceX / DominoSky Airline Operations Disruption Management System",
+  "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
+    "lint": "npm --prefix frontend run lint",
+    "preview": "npm --prefix frontend run preview",
+    "typecheck": "npm --prefix frontend run typecheck",
+    "test": "npm --prefix frontend run test",
+    "test:e2e": "npm --prefix frontend run test:e2e"
+  }
+}

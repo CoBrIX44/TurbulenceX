@@ -75,7 +75,31 @@ def build_network(data: Dataset, checksum: str = "") -> Network:
 
 
 def load_network(path: str | Path) -> Network:
-    raw = Path(path).read_bytes()
+    p = Path(path)
+    if p.exists():
+        raw = p.read_bytes()
+    else:
+        # Check standard relative candidate paths
+        candidates = [
+            Path(__file__).resolve().parents[2] / "data" / "flight_network.json",
+            Path(__file__).resolve().parents[2] / "flight_network.json",
+            Path.cwd() / "data" / "flight_network.json",
+            Path.cwd() / "backend" / "data" / "flight_network.json",
+            Path.cwd() / "flight_network.json",
+            Path("/var/task/data/flight_network.json"),
+            Path("/var/task/backend/data/flight_network.json"),
+        ]
+        raw = None
+        for c in candidates:
+            if c.exists():
+                raw = c.read_bytes()
+                break
+        if raw is None:
+            # Fallback to embedded byte-identical dataset
+            from .embedded_dataset import RAW_DATASET_BYTES
+            raw = RAW_DATASET_BYTES
+
+    assert raw is not None
     data = Dataset.model_validate(json.loads(raw))
     return build_network(data, hashlib.sha256(raw).hexdigest())
 
